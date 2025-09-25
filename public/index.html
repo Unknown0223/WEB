@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinamik Hisobot Jadvali</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <div class="main-wrapper">
+            <div class="sidebar">
+                                <!-- ================== YANGI QIDIRUV MAYDONI ================== -->
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" placeholder="ID, viloyat, sana bo'yicha...">
+                </div>
+                <!-- ========================================================== -->
+                <div id="saved-reports-list">
+                    <p>Hozircha hisobotlar yo'q.</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <header class="header">
+                    <div class="header-left">
+                        <span class="badge" id="report-id-badge">YANGI</span>
+                    </div>
+                    <div class="header-center">
+                        <input type="date" id="date-picker" class="date-badge" placeholder="Sanani tanlang">
+                    </div>
+                    <div class="header-right">
+                        <select id="location-select" class="location-badge"></select>
+                    </div>
+                </header>
+
+                <div class="table-wrapper">
+                    <table id="main-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+
+                <div class="controls">
+                    <button id="confirm-btn">TASDIQLASH VA SAQLASH</button>
+                    <button id="excel-btn">EXCEL YUKLAB OLISH</button>
+                </div>
+
+                <!-- ================== YANGI BLOK ================== -->
+                <div id="summary-wrapper" class="summary-wrapper hidden">
+                    <h4 class="summary-title">Ma'lumotlar xulosasi:</h4>
+                    <div id="summary-list" class="summary-list">
+                        <!-- Ma'lumotlar bu yerga JavaScript orqali qo'shiladi -->
+                    </div>
+                    <div id="summary-total" class="summary-total">
+                        <!-- Umumiy summa bu yerga JavaScript orqali qo'shiladi -->
+                    </div>
+                </div>
+                <!-- =============================================== -->
+
+            </div>
+        </div>
+
+        <div class="global-controls">
+            <button id="settings-btn" class="global-btn">⚙️ Sozlamalar</button>
+            <button id="new-report-btn" class="global-btn">➕ Yangi Hisobot</button>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Admin Paneli</h2>
+            <div class="settings-section">
+                <h4>Ustunlarni Boshqarish (Jami ustunidan tashqari)</h4>
+                <div id="columns-settings"></div>
+                <input type="text" id="new-column-name" placeholder="Yangi ustun nomi">
+                <button id="add-column-btn" class="modal-btn">Ustun Qo'shish</button>
+            </div>
+            <div class="settings-section">
+                <h4>Qatorlarni Boshqarish</h4>
+                <div id="rows-settings"></div>
+                <input type="text" id="new-row-name" placeholder="Yangi qator nomi">
+                <button id="add-row-btn" class="modal-btn">Qator Qo'shish</button>
+            </div>
+            <div class="settings-section">
+                <h4>Filiallarni Boshqarish</h4>
+                <div id="locations-settings"></div>
+                <input type="text" id="new-location-name" placeholder="Yangi filial nomi">
+                <button id="add-location-btn" class="modal-btn">Filial Qo'shish</button>
+            </div>
+            <div class="modal-footer">
+                <button id="save-settings-btn" class="modal-btn primary">Sozlamalarni Saqlash va Yangilash</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast hidden"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
