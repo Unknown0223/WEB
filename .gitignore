@@ -115,5 +115,8 @@ Thumbs.db
 .tmp/
 .temp/
 
+# Local SQLite database
+database.db
+
 # Logs for PM2
 .pm2
