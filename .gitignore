@@ -120,3 +120,16 @@ database.db
 
 # Logs for PM2
 .pm2
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node.js
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Boshqalar
+.DS_Store
+database.db

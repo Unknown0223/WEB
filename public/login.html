@@ -4,97 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tizimga Kirish</title>
-    <!-- Loyihaning asosiy stillar faylini ulaymiz, shunda dizayn bir xil bo'ladi -->
     <link rel="stylesheet" href="style.css"> 
-    
-    <!-- Faqat shu sahifa uchun maxsus stillar -->
-    <style>
-        /* Butun sahifani markazga keltirish */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Kirish oynasi uchun konteyner */
-        .login-container {
-            background-color: var(--table-bg); /* Asosiy stillardan rangni olamiz */
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        /* Sarlavha stili */
-        .login-container h2 {
-            color: var(--blue-color); /* Asosiy stillardan rangni olamiz */
-            margin-top: 0;
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-
-        /* Kiritish maydonlari (input) uchun stil */
-        .login-container .input-field {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        /* Kiritish maydoniga fokus qilinganda */
-        .login-container .input-field:focus {
-            border-color: var(--blue-color);
-            box-shadow: 0 0 8px 1px rgba(0, 123, 255, 0.5);
-        }
-
-        /* Kirish tugmasi uchun stil */
-        .login-container .login-btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 8px;
-            border: none;
-            background-color: var(--blue-color);
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        /* Tugmaga sichqoncha olib borilganda */
-        .login-container .login-btn:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-        
-        /* Tugma bosilganda */
-        .login-container .login-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Xatolik xabari uchun joy */
-        #error-message {
-            color: var(--red-color); /* Asosiy stillardan rangni olamiz */
-            margin-top: 20px;
-            font-weight: 500;
-            min-height: 20px; /* Xabar bo'lmaganda ham joy egallab turadi */
-        }
-    </style>
 </head>
-<body>
+<body class="login-page">
 
     <div class="login-container">
         <h2>Tizimga Kirish</h2>
@@ -103,11 +15,9 @@
             <input type="password" id="password" class="input-field" placeholder="Parolni kiriting" required>
             <button type="submit" class="login-btn">KIRISH</button>
         </form>
-        <!-- Xatolik xabarlari shu yerda ko'rsatiladi -->
         <p id="error-message"></p>
     </div>
 
-    <!-- Bu sahifaning mantiqi uchun JavaScript faylini ulaymiz -->
     <script src="login.js"></script>
 
 </body>

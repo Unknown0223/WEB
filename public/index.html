@@ -14,15 +14,26 @@
                 <div class="search-wrapper">
                     <input type="text" id="search-input" placeholder="ID, viloyat, sana bo'yicha...">
                 </div>
+    
+                <!-- YAngi filtr tugmalari bloki -->
+                <div id="report-filter-buttons" class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Barchasi</button>
+                    <button class="filter-btn" data-filter="edited">Tahrirlangan</button>
+                    <button class="filter-btn" data-filter="unedited">Tahrirlanmagan</button>
+                </div>
+                <!-- Filtr tugmalari bloki tugadi -->
+    
                 <div id="saved-reports-list">
                     <p>Hozircha hisobotlar yo'q.</p>
                 </div>
             </div>
+    
 
             <div class="container">
                 <header class="header">
                     <div class="header-left">
                         <span class="badge" id="report-id-badge">YANGI</span>
+                        <button id="history-btn" class="icon-btn hidden" title="O'zgarishlar tarixi">🕒</button>
                     </div>
                     <div class="header-center">
                         <input type="date" id="date-picker" class="date-badge" placeholder="Sanani tanlang">
@@ -41,6 +52,7 @@
                 </div>
 
                 <div class="controls">
+                    <button id="edit-btn" class="hidden">✏️ TAHRIRLASH</button>
                     <button id="confirm-btn">TASDIQLASH VA SAQLASH</button>
                     <button id="excel-btn">EXCEL YUKLAB OLISH</button>
                 </div>
@@ -56,58 +68,81 @@
         <div class="global-controls">
             <button id="settings-btn" class="global-btn">⚙️ Sozlamalar</button>
             <button id="new-report-btn" class="global-btn">➕ Yangi Hisobot</button>
-            <!-- Tizimdan chiqish tugmasi uchun joy -->
             <button id="logout-btn" class="global-btn">🚪 Chiqish</button>
         </div>
     </div>
 
-    <!-- ADMIN MODAL OYNASI (YANGI "FOYDALANUVCHILAR" BO'LIMI BILAN) -->
+    <!-- ADMIN MODAL OYNASI -->
     <div id="admin-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2>Admin Paneli</h2>
-
-            <div class="modal-body">
-                <!-- YANGI BO'LIM: Foydalanuvchilarni Boshqarish -->
+            <div id="admin-panel-body" class="modal-body">
                 <div class="settings-section">
                     <h4>Foydalanuvchilarni Boshqarish</h4>
-                    <div id="users-list" class="settings-list">
-                        <!-- Foydalanuvchilar ro'yxati shu yerga yuklanadi -->
-                    </div>
+                    <div id="user-list" class="settings-list"></div>
                     <div class="user-form">
                         <h5>Yangi Foydalanuvchi Qo'shish</h5>
-                        <input type="text" id="new-user-username" placeholder="Login (username)">
-                        <input type="text" id="new-user-password" placeholder="Parol">
-                        <select id="new-user-location">
-                            <!-- Filiallar ro'yxati bu yerga yuklanadi -->
+                        <input type="text" id="new-username" placeholder="Login (username)">
+                        <input type="password" id="new-password" placeholder="Parol">
+                        <select id="new-user-role">
+                            <option value="operator" selected>Operator</option>
+                            <option value="manager">Menejer</option>
+                            <option value="admin">Admin</option>
                         </select>
+                        <div id="new-user-locations-group">
+                            <label>Operator uchun filiallar:</label>
+                            <div id="locations-checkbox-list" class="checkbox-list"></div>
+                        </div>
                         <button id="add-user-btn" class="modal-btn">Foydalanuvchi Qo'shish</button>
                     </div>
                 </div>
-                <!-- ESKI BO'LIMLAR -->
                 <div class="settings-section">
-                    <h4>Ustunlarni Boshqarish</h4>
-                    <div id="columns-settings" class="settings-list"></div>
-                    <input type="text" id="new-column-name" placeholder="Yangi ustun nomi">
-                    <button id="add-column-btn" class="modal-btn">Ustun Qo'shish</button>
+                    <h4>Telegram Bot Sozlamalari</h4>
+                    <div class="telegram-form">
+                        <label for="bot-token">Bot Token</label>
+                        <input type="text" id="bot-token" placeholder="BotFather bergan tokenni kiriting">
+                        <label for="group-id">Guruh ID</label>
+                        <input type="text" id="group-id" placeholder="Guruh ID raqamini kiriting (minus bilan)">
+                        <button id="save-telegram-btn" class="modal-btn">Telegram Sozlamalarini Saqlash</button>
+                    </div>
                 </div>
                 <div class="settings-section">
-                    <h4>Qatorlarni Boshqarish</h4>
-                    <div id="rows-settings" class="settings-list"></div>
-                    <input type="text" id="new-row-name" placeholder="Yangi qator nomi">
-                    <button id="add-row-btn" class="modal-btn">Qator Qo'shish</button>
-                </div>
-                <div class="settings-section">
-                    <h4>Filiallarni Boshqarish</h4>
-                    <div id="locations-settings" class="settings-list"></div>
-                    <input type="text" id="new-location-name" placeholder="Yangi filial nomi">
-                    <button id="add-location-btn" class="modal-btn">Filial Qo'shish</button>
+                    <h4>Jadval Sozlamalari</h4>
+                    <div class="table-settings-grid">
+                        <div>
+                            <h5>Ustunlar</h5>
+                            <div id="columns-settings" class="settings-list"></div>
+                            <input type="text" id="new-column-name" placeholder="Yangi ustun nomi">
+                            <button id="add-column-btn" class="modal-btn">Qo'shish</button>
+                        </div>
+                        <div>
+                            <h5>Qatorlar</h5>
+                            <div id="rows-settings" class="settings-list"></div>
+                            <input type="text" id="new-row-name" placeholder="Yangi qator nomi">
+                            <button id="add-row-btn" class="modal-btn">Qo'shish</button>
+                        </div>
+                        <div>
+                            <h5>Filiallar</h5>
+                            <div id="locations-settings" class="settings-list"></div>
+                            <input type="text" id="new-location-name" placeholder="Yangi filial nomi">
+                            <button id="add-location-btn" class="modal-btn">Qo'shish</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-
             <div class="modal-footer">
-                <button id="save-settings-btn" class="modal-btn primary">Jadval Sozlamalarini Saqlash</button>
+                <button id="save-table-settings-btn" class="modal-btn primary">Jadval Sozlamalarini Saqlash</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Hisobot tarixi uchun modal oyna -->
+    <div id="history-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Hisobot O'zgarishlar Tarixi</h2>
+            <div id="history-modal-body" class="modal-body"></div>
         </div>
     </div>
 
