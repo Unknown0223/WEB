@@ -1,5 +1,7 @@
+/* Google Fonts import */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' );
 
+/* Loyiha uchun asosiy ranglar va o'zgaruvchilar */
 :root {
     --bg-color: #1f2128;
     --table-bg: #2c2f3a;
@@ -13,12 +15,20 @@
     --green-glow: rgba(40, 167, 69, 0.7);
 }
 
+/* Umumiy body stili */
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
+}
+
+/* --- ASOSIY SAHIFA (index.html) UCHUN MAXSUS STILLAR --- */
+
+/* Faqat asosiy sahifadagi body uchun ishlaydi */
+body.main-page {
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .page-wrapper {
@@ -91,15 +101,9 @@ body {
     border-radius: 15px;
     height: fit-content;
 }
-.sidebar h3 {
-    margin-top: 0;
-    color: var(--green-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-}
-/* ================== QIDIRUV MAYDONI UCHUN YANGI STILLAR ================== */
+
 .search-wrapper {
-    margin: 15px 0;
+    margin-bottom: 15px;
 }
 
 #search-input {
@@ -119,7 +123,6 @@ body {
     border-color: var(--blue-color);
     box-shadow: 0 0 8px 1px rgba(0, 123, 255, 0.5);
 }
-/* ======================================================================= */
 
 #saved-reports-list .report-item {
     background-color: var(--header-bg);
@@ -180,7 +183,7 @@ input[type="date"]:not(:valid)::before {
     -moz-appearance: none;
     appearance: none;
     padding-right: 30px;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e0e0e0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'   );
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e0e0e0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E' );
     background-repeat: no-repeat;
     background-position: right 10px top 50%;
     background-size: .65em auto;
@@ -238,7 +241,7 @@ input[type="date"]:not(:valid)::before {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--red-color);
+    background-color: var(--green-color);
     color: white;
     padding: 15px 25px;
     border-radius: 8px;
@@ -246,6 +249,9 @@ input[type="date"]:not(:valid)::before {
     z-index: 2000;
     font-weight: 600;
     animation: slide-in 0.5s forwards;
+}
+.toast.error {
+    background-color: var(--red-color);
 }
 .toast.hidden {
     animation: slide-out 0.5s forwards;
@@ -263,17 +269,7 @@ input[type="date"]:not(:valid)::before {
 .modal.hidden { display: none; }
 .modal-content { background-color: var(--table-bg); padding: 30px; border: 1px solid var(--border-color); width: 80%; max-width: 700px; border-radius: 15px; position: relative; }
 .close-btn { color: #aaa; position: absolute; top: 15px; right: 25px; font-size: 28px; font-weight: bold; cursor: pointer; }
-.settings-section { margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 25px; }
-.settings-section:last-of-type { border-bottom: none; }
-.settings-section h4 { color: var(--green-color); margin-top: 0; }
-.settings-section input[type="text"] { width: calc(100% - 160px); padding: 10px; margin-right: 10px; border-radius: 5px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
-.modal-btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; background-color: var(--blue-color); color: white; }
-.modal-btn.primary { background-color: var(--green-color); width: 100%; padding: 15px; font-size: 16px; }
-.setting-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background-color: var(--header-bg); border-radius: 5px; margin-bottom: 8px; }
-.setting-item input { flex-grow: 1; background: transparent; border: none; color: var(--text-color); font-size: 16px; }
-.delete-item-btn { background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 20px; margin-left: 10px; }
 
-/* ================== XULOSA BLOKI UCHUN YANGI STILLAR ================== */
 .summary-wrapper {
     margin-top: 30px;
     background-color: var(--header-bg);
@@ -326,4 +322,272 @@ input[type="date"]:not(:valid)::before {
     text-align: center;
     font-size: 18px;
     font-weight: 700;
+}
+
+/* --- LOGIN SAHIFASI (login.html) UCHUN MAXSUS STILLAR --- */
+
+/* Faqat login sahifasidagi body uchun ishlaydi */
+body.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-container {
+    background-color: var(--table-bg);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.login-container h2 {
+    color: var(--blue-color);
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.login-container .input-field {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.login-container .input-field:focus {
+    border-color: var(--blue-color);
+    box-shadow: 0 0 8px 1px rgba(0, 123, 255, 0.5);
+}
+
+.login-container .login-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--blue-color);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-container .login-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.login-container .login-btn:active {
+    transform: translateY(0);
+}
+
+#error-message {
+    color: var(--red-color);
+    margin-top: 20px;
+    font-weight: 500;
+    min-height: 20px;
+}
+
+/* === MODAL OYNA SCROLL MUAMMOSINI HAL QILISH UCHUN YANGI STILLAR === */
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-body {
+    overflow-y: auto;
+    padding-right: 15px;
+    margin-right: -15px;
+}
+
+.settings-section {
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 25px;
+}
+
+.settings-section:last-of-type {
+    border-bottom: none;
+}
+
+.settings-section h4 {
+    color: var(--green-color);
+    margin-top: 0;
+}
+
+.settings-section input[type="text"] {
+    width: calc(100% - 160px);
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.modal-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: var(--blue-color);
+    color: white;
+}
+
+.settings-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: var(--bg-color);
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background-color: var(--header-bg);
+    border-radius: 5px;
+    margin-bottom: 8px;
+}
+
+.setting-item input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    outline: none;
+}
+
+.delete-item-btn {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.modal-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-btn.primary {
+    background-color: var(--green-color);
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+}
+/* === FOYDALANUVCHILARNI BOSHQARISH PANELI UCHUN YANGI STILLAR === */
+
+/* Foydalanuvchi elementi (ro'yxatdagi har bir qator) */
+.user-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto; /* Login, Filial, Tugmalar */
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    background-color: var(--header-bg);
+    border-radius: 5px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--blue-color);
+}
+
+.user-item.admin-item {
+    border-left-color: var(--green-color); /* Adminni ajratib turish uchun */
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info .username {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.user-info .location {
+    font-size: 12px;
+    color: #a0a0a0;
+    text-transform: uppercase;
+}
+
+.user-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 8px;
+    transition: transform 0.2s;
+}
+
+.user-actions button:hover {
+    transform: scale(1.2);
+}
+
+.reset-password-btn {
+    color: #ffc107; /* Sariq rang */
+}
+
+.delete-user-btn {
+    color: var(--red-color); /* Qizil rang */
+}
+
+/* Yangi foydalanuvchi qo'shish formasi uchun stillar */
+.user-form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.user-form h5 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+/* Formadagi input va select'lar yonma-yon turishi uchun */
+.user-form input,
+.user-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    box-sizing: border-box; /* Padding va border'ni umumiy kenglikka qo'shadi */
+}
+
+/* Chiqish tugmasi uchun */
+#logout-btn {
+    background-color: var(--red-color) !important;
+    border-color: var(--red-color) !important;
+}
+
+#logout-btn:hover {
+    background-color: #a72837 !important;
 }

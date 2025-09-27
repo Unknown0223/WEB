@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elementlarini topish ---
     const settingsBtn = document.getElementById('settings-btn');
     const newReportBtn = document.getElementById('new-report-btn');
+    const logoutBtn = document.getElementById('logout-btn'); // YANGI
     const adminModal = document.getElementById('admin-modal');
     const closeModalBtn = document.querySelector('.close-btn');
     const saveSettingsBtn = document.getElementById('save-settings-btn');
@@ -15,89 +16,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const excelBtn = document.getElementById('excel-btn');
     const savedReportsList = document.getElementById('saved-reports-list');
     const toastNotification = document.getElementById('toast-notification');
-    // Yangi elementlar
     const summaryWrapper = document.getElementById('summary-wrapper');
     const summaryList = document.getElementById('summary-list');
     const summaryTotal = document.getElementById('summary-total');
     const searchInput = document.getElementById('search-input');
 
+    // --- Foydalanuvchi paneli elementlari (YANGI) ---
+    const usersListDiv = document.getElementById('users-list');
+    const addUserBtn = document.getElementById('add-user-btn');
+    const newUserUsernameInput = document.getElementById('new-user-username');
+    const newUserPasswordInput = document.getElementById('new-user-password');
+    const newUserLocationSelect = document.getElementById('new-user-location');
 
-    // --- Ma'lumotlar bazasi (localStorage) va holat (state) ---
+
+    // --- Global o'zgaruvchilar ---
+    let currentUser = null;
     let state = {
-        settings: {
-            columns: ["Накд", "Перечисление", "Терминал"],
-            rows: ["Лалаку", "Соф", "Женс", "Гига", "арзони", "SUV", "LM", "ECO"],
-            locations: ["Навоий", "Тошкент", "Самарқанд"],
-            nextReportId: 1
-        },
+        settings: { columns: [], rows: [], locations: [] },
         savedReports: {},
         currentReport: { id: null, data: {} }
     };
 
-    // --- XULOSA BLOKINI YARATISH UCHUN YANGI FUNKSIYA ---
-    function renderSummary() {
-        summaryList.innerHTML = ''; // Ro'yxatni tozalash
-
-        // Har bir jadval qatori uchun
-        tableBody.querySelectorAll('tr').forEach(row => {
-            const rowName = row.querySelector('td:first-child').textContent;
-            const rowTotalText = row.querySelector('.row-total').textContent;
-            const rowTotalValue = parseFloat(rowTotalText.replace(/\s/g, '')) || 0;
-
-            // Agar qator summasi 0 dan katta bo'lsa...
-            if (rowTotalValue > 0) {
-                const summaryItem = document.createElement('div');
-                summaryItem.className = 'summary-item';
-                summaryItem.innerHTML = `
-                    <span class="item-name">${rowName}</span>
-                    <span class="item-value">${rowTotalText} so'm</span>
-                `;
-                summaryList.appendChild(summaryItem);
-            }
-        });
-
-        // Umumiy summani olish va ko'rsatish
-        const grandTotalText = document.getElementById('grand-total').textContent;
-        const grandTotalValue = parseFloat(grandTotalText.replace(/\s/g, '')) || 0;
-
-        if (grandTotalValue > 0) {
-            summaryTotal.textContent = `Umumiy summa: ${grandTotalText} so'm`;
-            summaryWrapper.classList.remove('hidden'); // Xulosa blokini ko'rsatish
-        } else {
-            summaryWrapper.classList.add('hidden'); // Agar summa 0 bo'lsa, yashirish
-        }
-    }
-
     // --- Asosiy Funksiyalar ---
 
-    function loadState() {
-        const savedSettings = localStorage.getItem('hisobot_settings');
-        const savedReports = localStorage.getItem('hisobot_reports');
-        if (savedSettings) {
-            const loadedSettings = JSON.parse(savedSettings);
-            if (!loadedSettings.nextReportId || loadedSettings.nextReportId > 100000) {
-                const maxId = savedReports ? Math.max(0, ...Object.keys(JSON.parse(savedReports)).map(Number)) : 0;
-                loadedSettings.nextReportId = maxId >= 1 ? maxId + 1 : 1;
+    async function loadInitialData() {
+        try {
+            const userRes = await fetch('/api/current-user');
+            if (!userRes.ok) {
+                window.location.href = '/login';
+                return;
             }
-            state.settings = { ...state.settings, ...loadedSettings };
-        }
-        if (savedReports) {
-            state.savedReports = JSON.parse(savedReports);
-        }
-    }
+            currentUser = await userRes.json();
 
-    function saveState() {
-        localStorage.setItem('hisobot_settings', JSON.stringify(state.settings));
-        localStorage.setItem('hisobot_reports', JSON.stringify(state.savedReports));
+            const settingsRes = await fetch('/api/settings');
+            state.settings = await settingsRes.json();
+
+            const reportsRes = await fetch('/api/reports');
+            state.savedReports = await reportsRes.json();
+            
+            if (currentUser.role === 'admin') {
+                settingsBtn.style.display = 'block';
+            } else {
+                settingsBtn.style.display = 'none';
+            }
+
+            if (currentUser.role === 'user' && currentUser.location) {
+                locationSelect.value = currentUser.location;
+                locationSelect.disabled = true;
+            }
+
+        } catch (error) {
+            console.error("Boshlang'ich ma'lumotlarni yuklashda xatolik:", error);
+            showToast("Serverdan ma'lumot yuklashda xatolik yuz berdi!", true);
+        }
     }
 
     function buildTable() {
         tableHead.innerHTML = '';
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = `<th>Столбец 1</th>`;
+        headerRow.innerHTML = `<th>Stolbets 1</th>`;
         state.settings.columns.forEach(col => { headerRow.innerHTML += `<th>${col}</th>`; });
         headerRow.innerHTML += `<th>Жами</th>`;
         tableHead.appendChild(headerRow);
+        
         tableBody.innerHTML = '';
         state.settings.rows.forEach(rowName => {
             const row = document.createElement('tr');
@@ -112,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.innerHTML = rowHTML;
             tableBody.appendChild(row);
         });
+
         tableFoot.innerHTML = '';
         const footerRow = document.createElement('tr');
         let footerHTML = `<td>Жами</td>`;
@@ -119,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         footerHTML += `<td id="grand-total">0</td>`;
         footerRow.innerHTML = footerHTML;
         tableFoot.appendChild(footerRow);
+
         if (state.currentReport.id) {
             tableBody.querySelectorAll('.numeric-input').forEach(input => input.disabled = true);
         }
@@ -144,27 +127,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         state.settings.columns.forEach(col => {
             const totalCell = document.getElementById(`total-${col.replace(/\s/g, '_')}`);
-            if (totalCell) {
-                totalCell.textContent = formatNumber(columnTotals[col]);
-            }
+            if (totalCell) totalCell.textContent = formatNumber(columnTotals[col]);
         });
         document.getElementById('grand-total').textContent = formatNumber(grandTotal);
-        
         renderSummary();
     }
 
-    function populateAdminModal() {
-        const createSettingItem = (name, type) => `<div class="setting-item" data-type="${type}" data-original-name="${name}"><input type="text" value="${name}" class="setting-name-input"><button class="delete-item-btn">×</button></div>`;
-        document.getElementById('columns-settings').innerHTML = state.settings.columns.map(col => createSettingItem(col, 'column')).join('');
-        document.getElementById('rows-settings').innerHTML = state.settings.rows.map(row => createSettingItem(row, 'row')).join('');
-        document.getElementById('locations-settings').innerHTML = state.settings.locations.map(loc => createSettingItem(loc, 'location')).join('');
-    }
-
     function populateLocations() {
+        const currentVal = locationSelect.value;
         locationSelect.innerHTML = '';
+        newUserLocationSelect.innerHTML = '<option value="">Filialni tanlang</option>'; // YANGI
         state.settings.locations.forEach(loc => {
-            locationSelect.innerHTML += `<option value="${loc}">${loc}</option>`;
+            const optionHTML = `<option value="${loc}">${loc}</option>`;
+            locationSelect.innerHTML += optionHTML;
+            newUserLocationSelect.innerHTML += optionHTML; // YANGI
         });
+        locationSelect.value = currentVal;
     }
 
     function createNewReport() {
@@ -173,18 +151,16 @@ document.addEventListener('DOMContentLoaded', () => {
         reportIdBadge.className = 'badge new';
         confirmBtn.textContent = 'TASDIQLASH VA SAQLASH';
         confirmBtn.disabled = false;
-        datePicker.value = '';
+        datePicker.valueAsDate = new Date();
         datePicker.classList.remove('pulse-error');
+        
+        if (currentUser && currentUser.role === 'user') {
+            locationSelect.value = currentUser.location;
+        }
+
         buildTable();
         document.querySelectorAll('.report-item.active').forEach(item => item.classList.remove('active'));
         summaryWrapper.classList.add('hidden');
-    }
-
-    function formatReportId(id) {
-        if (id > 100000) {
-            return id;
-        }
-        return String(id).padStart(2, '0');
     }
 
     function renderSavedReports() {
@@ -199,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = document.createElement('div');
             item.className = 'report-item';
             item.dataset.id = id;
-            item.innerHTML = `<span>#${formatReportId(id)} - ${report.location} - ${report.date}</span>`;
+            item.innerHTML = `<span>#${String(id).padStart(2, '0')} - ${report.location} - ${report.date}</span>`;
             item.addEventListener('click', () => loadReport(id));
             savedReportsList.appendChild(item);
         });
@@ -208,28 +184,58 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadReport(id) {
         const report = state.savedReports[id];
         if (!report) return;
+
         const originalSettings = JSON.parse(JSON.stringify(state.settings));
         state.settings = report.settings;
+        
         state.currentReport = JSON.parse(JSON.stringify({ id: id, data: report.data }));
         
-        reportIdBadge.textContent = `#${formatReportId(id)}`;
-        
+        reportIdBadge.textContent = `#${String(id).padStart(2, '0')}`;
         reportIdBadge.className = 'badge saved';
         datePicker.value = report.date;
         datePicker.classList.remove('pulse-error');
         populateLocations();
         locationSelect.value = report.location;
+        
         buildTable();
+        
         confirmBtn.textContent = 'SAQLANGAN';
         confirmBtn.disabled = true;
+        
         document.querySelectorAll('.report-item.active').forEach(item => item.classList.remove('active'));
         const activeItem = document.querySelector(`.report-item[data-id='${id}']`);
         if (activeItem) activeItem.classList.add('active');
+        
         state.settings = originalSettings;
     }
 
-    function showToast(message) {
+    function renderSummary() {
+        summaryList.innerHTML = '';
+        let hasData = false;
+        tableBody.querySelectorAll('tr').forEach(row => {
+            const rowName = row.querySelector('td:first-child').textContent;
+            const rowTotalText = row.querySelector('.row-total').textContent;
+            const rowTotalValue = parseFloat(rowTotalText.replace(/\s/g, '')) || 0;
+            if (rowTotalValue > 0) {
+                hasData = true;
+                const summaryItem = document.createElement('div');
+                summaryItem.className = 'summary-item';
+                summaryItem.innerHTML = `<span class="item-name">${rowName}</span><span class="item-value">${rowTotalText} so'm</span>`;
+                summaryList.appendChild(summaryItem);
+            }
+        });
+        const grandTotalText = document.getElementById('grand-total').textContent;
+        if (hasData) {
+            summaryTotal.textContent = `Umumiy summa: ${grandTotalText} so'm`;
+            summaryWrapper.classList.remove('hidden');
+        } else {
+            summaryWrapper.classList.add('hidden');
+        }
+    }
+
+    function showToast(message, isError = false) {
         toastNotification.textContent = message;
+        toastNotification.className = isError ? 'toast error' : 'toast';
         toastNotification.classList.remove('hidden');
         setTimeout(() => {
             toastNotification.classList.add('hidden');
@@ -241,96 +247,131 @@ document.addEventListener('DOMContentLoaded', () => {
         return numStr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
-    // --- Hodisa Tinglovchilari ---
+    // --- FOYDALANUVCHILARNI BOSHQARISH FUNKSIYALARI (YANGI) ---
 
-    settingsBtn.addEventListener('click', () => {
-        populateAdminModal();
+    async function loadAndRenderUsers() {
+        try {
+            const res = await fetch('/api/users');
+            if (!res.ok) throw new Error('Foydalanuvchilarni yuklab bo\'lmadi');
+            const users = await res.json();
+            
+            usersListDiv.innerHTML = '';
+            users.forEach(user => {
+                const userEl = document.createElement('div');
+                userEl.className = `user-item ${user.role === 'admin' ? 'admin-item' : ''}`;
+                userEl.dataset.userId = user.id;
+                
+                let actions = '';
+                // Admin o'zini o'chira olmaydi
+                if (user.id !== currentUser.id) {
+                    actions = `
+                        <button class="reset-password-btn" title="Parolni o'zgartirish">🔑</button>
+                        <button class="delete-user-btn" title="O'chirish">❌</button>
+                    `;
+                }
+
+                userEl.innerHTML = `
+                    <div class="user-info">
+                        <span class="username">${user.username}</span>
+                        <span class="location">${user.location || 'ADMIN'}</span>
+                    </div>
+                    <div class="user-actions">
+                        ${actions}
+                    </div>
+                `;
+                usersListDiv.appendChild(userEl);
+            });
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    }
+
+    // --- Hodisa Tinglovchilari (Event Listeners) ---
+
+    settingsBtn.addEventListener('click', async () => {
+        // Sozlamalar oynasi ochilganda foydalanuvchilar ro'yxatini yuklash
+        if (currentUser.role === 'admin') {
+            await loadAndRenderUsers();
+        }
+        // Jadval sozlamalarini modalga yuklash
+        const createSettingItem = (name, type) => `<div class="setting-item" data-type="${type}" data-original-name="${name}"><input type="text" value="${name}" class="setting-name-input"><button class="delete-item-btn">×</button></div>`;
+        document.getElementById('columns-settings').innerHTML = state.settings.columns.map(col => createSettingItem(col, 'column')).join('');
+        document.getElementById('rows-settings').innerHTML = state.settings.rows.map(row => createSettingItem(row, 'row')).join('');
+        document.getElementById('locations-settings').innerHTML = state.settings.locations.map(loc => createSettingItem(loc, 'location')).join('');
+        
         adminModal.classList.remove('hidden');
     });
+
     closeModalBtn.addEventListener('click', () => adminModal.classList.add('hidden'));
-    window.addEventListener('click', (e) => {
-        if (e.target == adminModal) adminModal.classList.add('hidden');
-    });
     newReportBtn.addEventListener('click', createNewReport);
 
-    adminModal.addEventListener('click', (e) => {
-        const addAndRender = (type, inputId) => {
-            const input = document.getElementById(inputId);
-            const name = input.value.trim();
-            const list = state.settings[type + 's'];
-            if (name && !list.includes(name)) {
-                list.push(name);
-                populateAdminModal();
-                input.value = '';
-            }
-        };
-        if (e.target.id === 'add-column-btn') addAndRender('column', 'new-column-name');
-        if (e.target.id === 'add-row-btn') addAndRender('row', 'new-row-name');
-        if (e.target.id === 'add-location-btn') addAndRender('location', 'new-location-name');
-        if (e.target.classList.contains('delete-item-btn')) {
-            const item = e.target.parentElement;
-            const type = item.dataset.type;
-            const originalName = item.dataset.originalName;
-            state.settings[type + 's'] = state.settings[type + 's'].filter(i => i !== originalName);
-            item.remove();
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        } catch (error) {
+            showToast('Tizimdan chiqishda xatolik', true);
         }
     });
 
-    saveSettingsBtn.addEventListener('click', () => {
+    saveSettingsBtn.addEventListener('click', async () => {
         const tempSettings = { columns: [], rows: [], locations: [] };
-        document.querySelectorAll('.setting-item').forEach(item => {
+        document.querySelectorAll('#admin-modal .settings-section:not(:first-child) .setting-item').forEach(item => {
             const type = item.dataset.type;
             const newName = item.querySelector('.setting-name-input').value.trim();
-            if (newName) {
-                tempSettings[type + 's'].push(newName);
-            }
+            if (newName) tempSettings[type + 's'].push(newName);
         });
         state.settings.columns = tempSettings.columns;
         state.settings.rows = tempSettings.rows;
         state.settings.locations = tempSettings.locations;
-        saveState();
-        adminModal.classList.add('hidden');
-        populateLocations();
-        createNewReport();
-    });
-
-    tableBody.addEventListener('input', (e) => {
-        if (e.target.classList.contains('numeric-input')) {
-            const input = e.target;
-            const key = input.dataset.key;
-            const value = input.value.replace(/\s/g, '');
-            state.currentReport.data[key] = parseFloat(value) || 0;
-            const cursorPosition = input.selectionStart;
-            const oldLength = input.value.length;
-            const formattedValue = formatNumber(value.replace(/[^0-9]/g, ''));
-            input.value = formattedValue;
-            const newLength = input.value.length;
-            input.setSelectionRange(cursorPosition + (newLength - oldLength), cursorPosition + (newLength - oldLength));
-            updateCalculations();
+        
+        try {
+            const response = await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(state.settings)
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message);
+            
+            showToast("Jadval sozlamalari saqlandi!");
+            populateLocations();
+            createNewReport();
+        } catch (error) {
+            showToast(error.message, true);
         }
     });
 
-    confirmBtn.addEventListener('click', () => {
+    confirmBtn.addEventListener('click', async () => {
         if (state.currentReport.id) return;
-
         if (!datePicker.value) {
-            showToast("Iltimos, hisobot sanasini tanlang!");
+            showToast("Iltimos, hisobot sanasini tanlang!", true);
             datePicker.classList.add('pulse-error');
             datePicker.focus();
             return;
         }
-
-        const newId = state.settings.nextReportId;
-        state.savedReports[newId] = {
+        const reportData = {
             date: datePicker.value,
             location: locationSelect.value,
-            data: JSON.parse(JSON.stringify(state.currentReport.data)),
-            settings: JSON.parse(JSON.stringify(state.settings))
+            data: state.currentReport.data,
+            settings: { columns: state.settings.columns, rows: state.settings.rows, locations: state.settings.locations }
         };
-        state.settings.nextReportId++;
-        saveState();
-        renderSavedReports();
-        loadReport(newId);
+        try {
+            const response = await fetch('/api/reports', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reportData)
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message);
+            showToast("Hisobot muvaffaqiyatli saqlandi!");
+            const newId = result.reportId;
+            state.savedReports[newId] = { id: newId, ...reportData };
+            renderSavedReports();
+            loadReport(newId);
+        } catch (error) {
+            showToast(error.message, true);
+        }
     });
 
     excelBtn.addEventListener('click', () => {
@@ -340,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const settings = isSavedReport ? reportToExport.settings : state.settings;
         const data = isSavedReport ? reportToExport.data : state.currentReport.data;
         const rows = [];
-        const headers = ['Столбец 1', ...settings.columns, 'Жами'];
+        const headers = ['Stolbets 1', ...settings.columns, 'Жами'];
         rows.push(headers);
         const columnTotals = {};
         settings.columns.forEach(col => columnTotals[col] = 0);
@@ -360,9 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grandTotal += rowTotal;
         });
         const footerRow = ['Жами'];
-        settings.columns.forEach(colName => {
-            footerRow.push(columnTotals[colName]);
-        });
+        settings.columns.forEach(colName => footerRow.push(columnTotals[colName]));
         footerRow.push(grandTotal);
         rows.push(footerRow);
         const worksheet = XLSX.utils.aoa_to_sheet(rows);
@@ -372,34 +411,134 @@ document.addEventListener('DOMContentLoaded', () => {
         XLSX.writeFile(workbook, `Hisobot_${date || 'aniqlanmagan'}.xlsx`);
     });
 
-    datePicker.addEventListener('input', () => {
-        if (datePicker.value) {
-            datePicker.classList.remove('pulse-error');
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        savedReportsList.querySelectorAll('.report-item').forEach(item => {
+            item.style.display = item.textContent.toLowerCase().includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    tableBody.addEventListener('input', (e) => {
+        if (e.target.classList.contains('numeric-input')) {
+            const input = e.target;
+            const key = input.dataset.key;
+            const value = input.value.replace(/\s/g, '');
+            state.currentReport.data[key] = parseFloat(value) || 0;
+            const cursorPosition = input.selectionStart;
+            const oldLength = input.value.length;
+            input.value = formatNumber(value.replace(/[^0-9]/g, ''));
+            const newLength = input.value.length;
+            input.setSelectionRange(cursorPosition + (newLength - oldLength), cursorPosition + (newLength - oldLength));
+            updateCalculations();
+        }
+    });
+    
+    adminModal.addEventListener('click', (e) => {
+        const addAndRender = (type, inputId) => {
+            const input = document.getElementById(inputId);
+            const name = input.value.trim();
+            const list = state.settings[type + 's'];
+            if (name && !list.includes(name)) {
+                list.push(name);
+                // Bu funksiya endi faqat jadval sozlamalarini chizadi
+                const createSettingItem = (name, type) => `<div class="setting-item" data-type="${type}" data-original-name="${name}"><input type="text" value="${name}" class="setting-name-input"><button class="delete-item-btn">×</button></div>`;
+                document.getElementById(type + 's-settings').innerHTML = list.map(item => createSettingItem(item, type)).join('');
+                input.value = '';
+            }
+        };
+        if (e.target.id === 'add-column-btn') addAndRender('column', 'new-column-name');
+        if (e.target.id === 'add-row-btn') addAndRender('row', 'new-row-name');
+        if (e.target.id === 'add-location-btn') addAndRender('location', 'new-location-name');
+        if (e.target.classList.contains('delete-item-btn')) {
+            const item = e.target.parentElement;
+            const type = item.dataset.type;
+            const originalName = item.dataset.originalName;
+            state.settings[type + 's'] = state.settings[type + 's'].filter(i => i !== originalName);
+            item.remove();
+        }
+    });
+
+    // --- FOYDALANUVCHILARNI BOSHQARISH HODISALARI (YANGI) ---
+
+    addUserBtn.addEventListener('click', async () => {
+        const username = newUserUsernameInput.value.trim();
+        const password = newUserPasswordInput.value.trim();
+        const location = newUserLocationSelect.value;
+
+        if (!username || !password || !location) {
+            showToast('Barcha maydonlarni to\'ldiring!', true);
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, location, role: 'user' })
+            });
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.message);
+
+            showToast(result.message);
+            newUserUsernameInput.value = '';
+            newUserPasswordInput.value = '';
+            newUserLocationSelect.value = '';
+            await loadAndRenderUsers(); // Ro'yxatni yangilash
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    });
+
+    usersListDiv.addEventListener('click', async (e) => {
+        const userId = e.target.closest('.user-item')?.dataset.userId;
+        if (!userId) return;
+
+        // Foydalanuvchini o'chirish
+        if (e.target.classList.contains('delete-user-btn')) {
+            if (confirm(`Rostdan ham bu foydalanuvchini o'chirmoqchimisiz?`)) {
+                try {
+                    const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+                    const result = await res.json();
+                    if (!res.ok) throw new Error(result.message);
+                    showToast(result.message);
+                    await loadAndRenderUsers();
+                } catch (error) {
+                    showToast(error.message, true);
+                }
+            }
+        }
+
+        // Parolni o'zgartirish
+        if (e.target.classList.contains('reset-password-btn')) {
+            const newPassword = prompt("Yangi parolni kiriting (kamida 4 belgi):");
+            if (newPassword && newPassword.length >= 4) {
+                try {
+                    const res = await fetch(`/api/users/${userId}/password`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ newPassword })
+                    });
+                    const result = await res.json();
+                    if (!res.ok) throw new Error(result.message);
+                    showToast(result.message);
+                } catch (error) {
+                    showToast(error.message, true);
+                }
+            } else if (newPassword !== null) { // Agar "Cancel" bosilmagan bo'lsa
+                showToast("Parol juda qisqa yoki kiritilmadi!", true);
+            }
         }
     });
 
     // --- Dasturni Boshlash ---
-    function init() {
-        loadState();
-        populateLocations();
-        renderSavedReports();
-        createNewReport();
+    async function init() {
+        await loadInitialData();
+        if(currentUser) {
+            populateLocations();
+            renderSavedReports();
+            createNewReport();
+        }
     }
-        // --- QIDIRUV MAYDONI UCHUN HODISA TINGLOVCHI ---
-    searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        const reportItems = savedReportsList.querySelectorAll('.report-item');
-
-        reportItems.forEach(item => {
-            const itemText = item.textContent.toLowerCase();
-            if (itemText.includes(searchTerm)) {
-                item.style.display = 'block'; // Agar mos kelsa, ko'rsatish
-            } else {
-                item.style.display = 'none'; // Agar mos kelmasa, yashirish
-            }
-        });
-    });
-
 
     init();
 });
