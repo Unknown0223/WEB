@@ -296,6 +296,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     newReportBtn.addEventListener('click', createNewReport);
     logoutBtn.addEventListener('click', async () => { await fetch('/api/logout', { method: 'POST' }); window.location.href = '/login'; });
 
+        // --- Hodisa Tinglovchilari --- bo'limiga qo'shing
+
+        excelBtn.addEventListener('click', () => {
+            try {
+                // 1. Jadval ma'lumotlarini yig'ish
+                const data = [];
+                
+                // Sarlavhalarni (thead) olish
+                const headerCells = tableHead.querySelectorAll('tr th');
+                const headerRow = Array.from(headerCells).map(th => th.textContent);
+                data.push(headerRow);
+    
+                // Asosiy qatorlarni (tbody) olish
+                tableBody.querySelectorAll('tr').forEach(tr => {
+                    const rowData = [];
+                    // Birinchi ustun (qator nomi)
+                    rowData.push(tr.querySelector('td:first-child').textContent);
+                    // Input'lardagi qiymatlar
+                    tr.querySelectorAll('.numeric-input').forEach(input => {
+                        // Formatlangan sonni oddiy songa o'tkazish
+                        const numericValue = parseFloat(input.value.replace(/\s/g, '')) || 0;
+                        rowData.push(numericValue);
+                    });
+                    // Qator jami
+                    const rowTotal = parseFloat(tr.querySelector('.row-total').textContent.replace(/\s/g, '')) || 0;
+                    rowData.push(rowTotal);
+                    data.push(rowData);
+                });
+    
+                // Jami qatorni (tfoot) olish
+                const footerCells = tableFoot.querySelectorAll('tr td');
+                const footerRow = Array.from(footerCells).map(td => {
+                    const value = td.textContent;
+                    // Agar qiymat son bo'lsa, uni songa o'tkazamiz, aks holda matnligicha qoladi
+                    const numericValue = parseFloat(value.replace(/\s/g, ''));
+                    return isNaN(numericValue) ? value : numericValue;
+                });
+                data.push(footerRow);
+    
+                // 2. Excel faylini yaratish
+                const worksheet = XLSX.utils.aoa_to_sheet(data);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Hisobot');
+    
+                // 3. Faylni yuklab olish
+                const reportId = state.currentReport.id ? `#${formatReportId(state.currentReport.id)}` : 'Yangi';
+                const location = locationSelect.value;
+                const date = datePicker.value;
+                const fileName = `Hisobot_${reportId}_${location}_${date}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+    
+                showToast("Excel fayl muvaffaqiyatli yaratildi!");
+    
+            } catch (error) {
+                console.error("Excel eksport qilishda xatolik:", error);
+                showToast("Excel faylni yaratishda xatolik yuz berdi!", true);
+            }
+        });
+    
+
     confirmBtn.addEventListener('click', async () => {
         const isUpdating = state.currentReport.id && state.isEditMode;
         const url = isUpdating ? `/api/reports/${state.currentReport.id}` : '/api/reports';
