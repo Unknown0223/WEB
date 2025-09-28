@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dinamik Hisobot Jadvali</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Flatpickr (modern calendar) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
 <body class="main-page">
 
@@ -15,20 +18,18 @@
                     <input type="text" id="search-input" placeholder="ID, viloyat, sana bo'yicha...">
                 </div>
     
-                <!-- YAngi filtr tugmalari bloki -->
+                <!-- Filtr tugmalari bloki -->
                 <div id="report-filter-buttons" class="filter-buttons">
                     <button class="filter-btn active" data-filter="all">Barchasi</button>
                     <button class="filter-btn" data-filter="edited">Tahrirlangan</button>
                     <button class="filter-btn" data-filter="unedited">Tahrirlanmagan</button>
                 </div>
-                <!-- Filtr tugmalari bloki tugadi -->
     
                 <div id="saved-reports-list">
                     <p>Hozircha hisobotlar yo'q.</p>
                 </div>
             </div>
     
-
             <div class="container">
                 <header class="header">
                     <div class="header-left">
@@ -36,7 +37,7 @@
                         <button id="history-btn" class="icon-btn hidden" title="O'zgarishlar tarixi">🕒</button>
                     </div>
                     <div class="header-center">
-                        <input type="date" id="date-picker" class="date-badge" placeholder="Sanani tanlang">
+                        <input type="text" id="date-picker" class="date-badge" placeholder="Sanani tanlang">
                     </div>
                     <div class="header-right">
                         <select id="location-select" class="location-badge"></select>
@@ -66,78 +67,14 @@
         </div>
 
         <div class="global-controls">
+            <!-- O'ZGARTIRILGAN QISM: Sozlamalar tugmasi endi modal oyna ochmaydi, balki yangi sahifaga o'tadi -->
             <button id="settings-btn" class="global-btn">⚙️ Sozlamalar</button>
             <button id="new-report-btn" class="global-btn">➕ Yangi Hisobot</button>
             <button id="logout-btn" class="global-btn">🚪 Chiqish</button>
         </div>
     </div>
 
-    <!-- ADMIN MODAL OYNASI -->
-    <div id="admin-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Admin Paneli</h2>
-            <div id="admin-panel-body" class="modal-body">
-                <div class="settings-section">
-                    <h4>Foydalanuvchilarni Boshqarish</h4>
-                    <div id="user-list" class="settings-list"></div>
-                    <div class="user-form">
-                        <h5>Yangi Foydalanuvchi Qo'shish</h5>
-                        <input type="text" id="new-username" placeholder="Login (username)">
-                        <input type="password" id="new-password" placeholder="Parol">
-                        <select id="new-user-role">
-                            <option value="operator" selected>Operator</option>
-                            <option value="manager">Menejer</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                        <div id="new-user-locations-group">
-                            <label>Operator uchun filiallar:</label>
-                            <div id="locations-checkbox-list" class="checkbox-list"></div>
-                        </div>
-                        <button id="add-user-btn" class="modal-btn">Foydalanuvchi Qo'shish</button>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <h4>Telegram Bot Sozlamalari</h4>
-                    <div class="telegram-form">
-                        <label for="bot-token">Bot Token</label>
-                        <input type="text" id="bot-token" placeholder="BotFather bergan tokenni kiriting">
-                        <label for="group-id">Guruh ID</label>
-                        <input type="text" id="group-id" placeholder="Guruh ID raqamini kiriting (minus bilan)">
-                        <button id="save-telegram-btn" class="modal-btn">Telegram Sozlamalarini Saqlash</button>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <h4>Jadval Sozlamalari</h4>
-                    <div class="table-settings-grid">
-                        <div>
-                            <h5>Ustunlar</h5>
-                            <div id="columns-settings" class="settings-list"></div>
-                            <input type="text" id="new-column-name" placeholder="Yangi ustun nomi">
-                            <button id="add-column-btn" class="modal-btn">Qo'shish</button>
-                        </div>
-                        <div>
-                            <h5>Qatorlar</h5>
-                            <div id="rows-settings" class="settings-list"></div>
-                            <input type="text" id="new-row-name" placeholder="Yangi qator nomi">
-                            <button id="add-row-btn" class="modal-btn">Qo'shish</button>
-                        </div>
-                        <div>
-                            <h5>Filiallar</h5>
-                            <div id="locations-settings" class="settings-list"></div>
-                            <input type="text" id="new-location-name" placeholder="Yangi filial nomi">
-                            <button id="add-location-btn" class="modal-btn">Qo'shish</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="save-table-settings-btn" class="modal-btn primary">Jadval Sozlamalarini Saqlash</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hisobot tarixi uchun modal oyna -->
+    <!-- Hisobot tarixi uchun modal oyna (bu o'z joyida qoladi) -->
     <div id="history-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -149,6 +86,9 @@
     <div id="toast-notification" class="toast hidden"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Flatpickr scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/uz.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boshqaruv Paneli</title>
+    
+    <!-- WebDataRocks Pivot Grid uchun stillar -->
+    <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet" />
+
+    <!-- Asosiy stillar, Google Fonts va ikonkalar -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+
+    <div class="admin-layout">
+        <!-- 1. YON MENYU (SIDEBAR ) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="brand-logo">MANUS</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <i data-feather="home"></i>
+                    <span>Bosh Sahifa</span>
+                </a>
+                <!-- YANGI BO'LIM QO'SHILDI -->
+                <a href="#pivot-reports" class="nav-link" data-page="pivot-reports">
+                    <i data-feather="bar-chart-2"></i>
+                    <span>Hisobotlar (Pivot)</span>
+                </a>
+                <a href="#users" class="nav-link" data-page="users">
+                    <i data-feather="users"></i>
+                    <span>Foydalanuvchilar</span>
+                </a>
+                <a href="#table-settings" class="nav-link" data-page="table-settings">
+                    <i data-feather="grid"></i>
+                    <span>Jadval Sozlamalari</span>
+                </a>
+                <a href="#telegram" class="nav-link" data-page="telegram">
+                    <i data-feather="send"></i>
+                    <span>Telegram Bot</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="back-to-main-btn">
+                    <i data-feather="arrow-left-circle"></i>
+                    <span>Asosiy Sahifaga</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- 2. ASOSIY KONTENT MAYDONI -->
+        <main class="main-content">
+            <!-- Bosh Sahifa (Dashboard) -->
+            <section id="dashboard" class="page active">
+                <h1 class="page-title">Boshqaruv Paneli</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(0, 123, 255, 0.1);"><i data-feather="users" style="color: #007bff;"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Jami Foydalanuvchilar</span>
+                            <span class="stat-value" id="total-users-stat">...</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(40, 167, 69, 0.1);"><i data-feather="map-pin" style="color: #28a745;"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Jami Filiallar</span>
+                            <span class="stat-value" id="total-locations-stat">...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- YANGI HISOBOTLAR (PIVOT) BO'LIMI -->
+                        <!-- YANGI HISOBOTLAR (PIVOT) BO'LIMI (YANGILANGAN) -->
+                        <section id="pivot-reports" class="page">
+                            <div class="page-header">
+                                <h1 class="page-title">Interaktiv Hisobotlar</h1>
+                                <!-- Shablonlarni boshqarish paneli -->
+                                <div class="template-controls">
+                                    <select id="template-select" class="custom-select">
+                                        <option value="">Shablonni tanlang...</option>
+                                    </select>
+                                    <button id="load-template-btn" class="btn-secondary" title="Tanlangan shablonni yuklash"><i data-feather="download"></i> Yuklash</button>
+                                    <button id="save-template-btn" class="btn-secondary" title="Joriy ko'rinishni yangi shablon sifatida saqlash"><i data-feather="save"></i> Saqlash</button>
+                                    <button id="delete-template-btn" class="btn-danger" title="Tanlangan shablonni o'chirish"><i data-feather="trash-2"></i></button>
+                                </div>
+                            </div>
+                            <p class="page-description">
+                                Bu yerda siz barcha hisobotlarni tahlil qilishingiz, filtrlashingiz va o'zingizga kerakli ko'rinishda jamlanma (svod) olishingiz mumkin.
+                                Qatorlar, ustunlar va qiymatlar maydonlariga kerakli parametrlarni surib o'tkazing.
+                            </p>
+                            <!-- Pivot Grid uchun maxsus joy -->
+                            <div id="pivot-container"></div>
+                        </section>
+            
+
+            <!-- Foydalanuvchilarni Boshqarish -->
+            <section id="users" class="page">
+                <h1 class="page-title">Foydalanuvchilarni Boshqarish</h1>
+                <div class="content-grid">
+                    <div class="card">
+                        <h3 class="card-title">Mavjud Foydalanuvchilar</h3>
+                        <div class="settings-list" id="user-list">
+                            <div class="skeleton-item"></div><div class="skeleton-item"></div><div class="skeleton-item"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Yangi Foydalanuvchi Qo'shish</h3>
+                        <div class="user-form">
+                            <input type="text" id="new-username" placeholder="Login (username)">
+                            <input type="password" id="new-password" placeholder="Parol">
+                            <select id="new-user-role">
+                                <option value="operator" selected>Operator</option><option value="manager">Menejer</option><option value="admin">Admin</option>
+                            </select>
+                            <div id="new-user-locations-group">
+                                <label>Operator uchun filiallar:</label>
+                                <div class="checkbox-list" id="locations-checkbox-list"></div>
+                            </div>
+                            <button class="btn-primary" id="add-user-btn"><i data-feather="user-plus"></i><span>Foydalanuvchi Qo'shish</span></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Jadval Sozlamalari -->
+            <section id="table-settings" class="page">
+                <h1 class="page-title">Jadval Sozlamalari</h1>
+                <div class="table-settings-grid">
+                    <div class="card">
+                        <h3 class="card-title">Ustunlar</h3>
+                        <div class="settings-list" id="columns-settings"></div>
+                        <div class="add-item-form">
+                            <input type="text" id="new-column-name" placeholder="Yangi ustun nomi">
+                            <button class="btn-secondary" id="add-column-btn"><i data-feather="plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Qatorlar</h3>
+                        <div class="settings-list" id="rows-settings"></div>
+                        <div class="add-item-form">
+                            <input type="text" id="new-row-name" placeholder="Yangi qator nomi">
+                            <button class="btn-secondary" id="add-row-btn"><i data-feather="plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Filiallar</h3>
+                        <div class="settings-list" id="locations-settings"></div>
+                        <div class="add-item-form">
+                            <input type="text" id="new-location-name" placeholder="Yangi filial nomi">
+                            <button class="btn-secondary" id="add-location-btn"><i data-feather="plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-footer">
+                    <button class="btn-primary" id="save-table-settings-btn"><i data-feather="save"></i><span>Jadval Sozlamalarini Saqlash</span></button>
+                </div>
+            </section>
+
+            <!-- Telegram Bot Sozlamalari -->
+            <section id="telegram" class="page">
+                <h1 class="page-title">Telegram Bot Sozlamalari</h1>
+                <div class="card" style="max-width: 600px;">
+                    <h3 class="card-title">Botni Ulash</h3>
+                    <div class="telegram-form">
+                        <label for="bot-token">Bot Token</label>
+                        <input type="text" id="bot-token" placeholder="BotFather bergan tokenni kiriting">
+                        <label for="group-id">Guruh ID</label>
+                        <input type="text" id="group-id" placeholder="Guruh ID raqamini kiriting (minus bilan)">
+                        <button class="btn-primary" id="save-telegram-btn"><i data-feather="save"></i><span>Telegram Sozlamalarini Saqlash</span></button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bildirishnoma (Toast) -->
+    <div id="toast-notification" class="toast hidden"></div>
+    
+    <!-- WebDataRocks Pivot Grid uchun skript -->
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
+    
+    <!-- Ikonkalar uchun skript -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- Asosiy JavaScript fayl -->
+    <script src="admin.js"></script>
+</body>
+</html>

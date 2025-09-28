@@ -7,20 +7,20 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const axios = require('axios');
-require('dotenv').config(); // .env faylini o'qish uchun (YANGI)
+require('dotenv').config(); // .env faylini o'qish uchun
 
 const app = express();
 const PORT = 3000;
 const saltRounds = 10;
-const PYTHON_BOT_URL = 'http://127.0.0.1:5001/send-report';
+// Manzilni .env faylidan o'qiydi. Agar topilmasa, standart "localhost" manzilini oladi.
+const PYTHON_BOT_URL = process.env.PYTHON_BOT_URL || 'http://127.0.0.1:5001/send-report';
 
 // --- Middleware'lar ---
 app.use(express.json( ));
 app.use(express.static('public'));
 
 app.use(session({
-    // secret: 'bu-juda-maxfiy-kalit-bolishi-kerak-albatta-ozgartiring', // ESKI USUL
-    secret: process.env.SESSION_SECRET || 'default-secret-key', // YANGI, XAVFSIZ USUL
+    secret: process.env.SESSION_SECRET || 'default-secret-key-please-change-it',
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 } // 1 kun
@@ -36,7 +36,7 @@ let db;
 
         await db.exec(`PRAGMA foreign_keys = ON;`);
 
-        // Jadvallarni yaratish (o'zgarishsiz)
+        // Jadvallarni yaratish
         await db.exec(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,7 +78,7 @@ let db;
             );
         `);
 
-        // Boshlang'ich adminni tekshirish va yaratish (o'zgarishsiz)
+        // Boshlang'ich adminni tekshirish va yaratish
         const admin = await db.get("SELECT * FROM users WHERE role = 'admin'");
         if (!admin) {
             const hashedPassword = await bcrypt.hash('admin123', saltRounds);
@@ -91,13 +91,13 @@ let db;
     }
 })();
 
-// --- Ruxsatlarni tekshiruvchi Middleware'lar (o'zgarishsiz) ---
+// --- Ruxsatlarni tekshiruvchi Middleware'lar ---
 const isAuthenticated = (req, res, next) => { if (req.session.user) { next(); } else { res.status(401).json({ message: "Avval tizimga kiring." }); } };
 const isAdmin = (req, res, next) => { if (req.session.user && req.session.user.role === 'admin') { next(); } else { res.status(403).json({ message: "Bu amal uchun sizda ruxsat yo'q." }); } };
 
 // --- Asosiy API Endpoints ---
 
-// Tizimga kirish (o'zgarishsiz)
+// Tizimga kirish
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ message: "Login va parol kiritilishi shart." });
@@ -123,13 +123,13 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Tizimdan chiqish (o'zgarishsiz)
+// Tizimdan chiqish
 app.post('/api/logout', (req, res) => { req.session.destroy(err => { if (err) return res.status(500).json({ message: "Tizimdan chiqishda xatolik." }); res.clearCookie('connect.sid'); res.json({ message: "Tizimdan muvaffaqiyatli chiqdingiz." }); }); });
 
-// Joriy foydalanuvchi ma'lumotlarini olish (o'zgarishsiz)
+// Joriy foydalanuvchi ma'lumotlarini olish
 app.get('/api/current-user', isAuthenticated, (req, res) => { res.json(req.session.user); });
 
-// --- Sozlamalar API (o'zgarishsiz) ---
+// --- Sozlamalar API ---
 app.get('/api/settings', isAuthenticated, async (req, res) => {
     try {
         const rows = await db.all("SELECT key, value FROM settings");
@@ -161,14 +161,13 @@ app.post('/api/settings', isAdmin, async (req, res) => {
     }
 });
 
-// Hisobotlarni olish (YANGILANGAN - SAMARADORLIK UCHUN)
+// --- Hisobotlar API ---
 app.get('/api/reports', isAuthenticated, async (req, res) => {
     try {
         const user = req.session.user;
         let query;
         let params = [];
 
-        // Bitta so'rovda hisobotlar va ularning tahrirlanishlar sonini olish
         let baseQuery = `
             SELECT 
                 r.id, r.report_date, r.location, r.data, r.settings,
@@ -178,13 +177,11 @@ app.get('/api/reports', isAuthenticated, async (req, res) => {
         `;
 
         if (user.role === 'operator') {
-            if (user.locations.length === 0) {
-                return res.json({}); // Operatorga filial biriktirilmagan bo'lsa, bo'sh ro'yxat qaytarish
-            }
+            if (user.locations.length === 0) return res.json({});
             const placeholders = user.locations.map(() => '?').join(',');
             query = `${baseQuery} WHERE r.location IN (${placeholders}) GROUP BY r.id ORDER BY r.id DESC`;
             params = user.locations;
-        } else { // admin va manager uchun
+        } else {
             query = `${baseQuery} GROUP BY r.id ORDER BY r.id DESC`;
         }
 
@@ -208,8 +205,6 @@ app.get('/api/reports', isAuthenticated, async (req, res) => {
     }
 });
 
-
-// Yangi hisobotni saqlash (YANGILANGAN - Telegramga yuborish markazlashtirildi)
 app.post('/api/reports', isAuthenticated, async (req, res) => {
     const { date, location, data, settings } = req.body;
     const user = req.session.user;
@@ -218,7 +213,6 @@ app.post('/api/reports', isAuthenticated, async (req, res) => {
         const result = await db.run("INSERT INTO reports (report_date, location, data, settings, created_by) VALUES (?, ?, ?, ?, ?)", date, location, JSON.stringify(data), JSON.stringify(settings), user.id);
         const newReportId = result.lastID;
         
-        // Markazlashtirilgan funksiyani chaqirish
         sendToTelegram({ type: 'new', report_id: newReportId, location, date, author: user.username, data, settings });
         
         res.status(201).json({ message: "Hisobot muvaffaqiyatli saqlandi.", reportId: newReportId });
@@ -227,7 +221,6 @@ app.post('/api/reports', isAuthenticated, async (req, res) => {
     }
 });
 
-// Hisobotni tahrirlash (YANGILANGAN - Telegramga yuborish markazlashtirildi)
 app.put('/api/reports/:id', isAdmin, async (req, res) => {
     const reportId = req.params.id;
     const { date, location, data, settings } = req.body;
@@ -239,7 +232,6 @@ app.put('/api/reports/:id', isAdmin, async (req, res) => {
         await db.run("INSERT INTO report_history (report_id, old_data, changed_by) VALUES (?, ?, ?)", reportId, oldReport.data, user.id);
         await db.run("UPDATE reports SET report_date = ?, location = ?, data = ?, settings = ?, updated_by = ?, updated_at = datetime('now') WHERE id = ?", date, location, JSON.stringify(data), JSON.stringify(settings), user.id, reportId);
         
-        // Markazlashtirilgan funksiyani chaqirish
         sendToTelegram({ type: 'edit', report_id: reportId, author: user.username, data, old_data: JSON.parse(oldReport.data), settings });
         
         res.json({ message: "Hisobot muvaffaqiyatli yangilandi." });
@@ -248,7 +240,6 @@ app.put('/api/reports/:id', isAdmin, async (req, res) => {
     }
 });
 
-// Hisobot tarixini olish (o'zgarishsiz)
 app.get('/api/reports/:id/history', isAdmin, async (req, res) => {
     try {
         const history = await db.all("SELECT h.*, u.username as changed_by_username FROM report_history h JOIN users u ON h.changed_by = u.id WHERE h.report_id = ? ORDER BY h.changed_at DESC", req.params.id);
@@ -258,7 +249,7 @@ app.get('/api/reports/:id/history', isAdmin, async (req, res) => {
     }
 });
 
-// --- Foydalanuvchilar API (o'zgarishsiz) ---
+// --- Foydalanuvchilar API ---
 app.get('/api/users', isAdmin, async (req, res) => {
     try {
         const users = await db.all("SELECT id, username, role FROM users");
@@ -295,10 +286,9 @@ app.post('/api/users', isAdmin, async (req, res) => {
 app.delete('/api/users/:id', isAdmin, async (req, res) => { const userId = req.params.id; if (Number(userId) === req.session.user.id) return res.status(403).json({ message: "Siz o'zingizni o'chira olmaysiz." }); try { await db.run("DELETE FROM users WHERE id = ?", userId); res.json({ message: "Foydalanuvchi muvaffaqiyatli o'chirildi." }); } catch (error) { res.status(500).json({ message: "Foydalanuvchini o'chirishda xatolik.", error: error.message }); } });
 app.put('/api/users/:id/password', isAdmin, async (req, res) => { const { newPassword } = req.body; if (!newPassword || newPassword.length < 4) return res.status(400).json({ message: "Yangi parol kamida 4 belgidan iborat bo'lishi kerak." }); try { const hashedPassword = await bcrypt.hash(newPassword, saltRounds); await db.run("UPDATE users SET password = ? WHERE id = ?", hashedPassword, req.params.id); res.json({ message: "Parol muvaffaqiyatli yangilandi." }); } catch (error) { res.status(500).json({ message: "Parolni yangilashda xatolik.", error: error.message }); } });
 
-// --- Markazlashtirilgan Telegramga yuborish funksiyasi (YANGI) ---
+// --- Markazlashtirilgan Telegramga yuborish funksiyasi ---
 async function sendToTelegram(payload) {
     try {
-        // Ma'lumotlar bazasidan sozlamalarni olish
         const tokenSetting = await db.get("SELECT value FROM settings WHERE key = 'telegram_bot_token'");
         const groupIdSetting = await db.get("SELECT value FROM settings WHERE key = 'telegram_group_id'");
 
@@ -312,7 +302,6 @@ async function sendToTelegram(payload) {
         
         const fullPayload = { ...payload, bot_token: token, group_id: groupId };
         
-        // Python botiga so'rov yuborish
         axios.post(PYTHON_BOT_URL, fullPayload)
             .then(response => console.log(`Python botiga so'rov muvaffaqiyatli jo'natildi. Status: ${response.status}`))
             .catch(error => console.error(`Python botiga ulanishda xatolik: ${error.message}`));
@@ -322,11 +311,26 @@ async function sendToTelegram(payload) {
     }
 }
 
-// --- Sahifalarni ochish (o'zgarishsiz) ---
-app.get('/login', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'login.html')); });
-app.get('/', (req, res) => { if (req.session.user) { res.sendFile(path.join(__dirname, 'public', 'index.html')); } else { res.redirect('/login'); } });
+// --- Sahifalarni ochish (YANGILANGAN QISM) ---
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
 
-// --- Serverni ishga tushirish (o'zgarishsiz) ---
+// YANGI YO'L: Admin sahifasini ochish uchun qo'shildi
+app.get('/admin', isAuthenticated, isAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// Asosiy sahifani ochish yo'li
+app.get('/', (req, res) => {
+    if (req.session.user) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+        res.redirect('/login');
+    }
+});
+
+// --- Serverni ishga tushirish ---
 app.listen(PORT, () => {
     console.log(`Server http://localhost:${PORT} manzilida ishga tushdi` );
 });
