@@ -4,18 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tizimga Kirish</title>
-    <link rel="stylesheet" href="style.css"> 
+    
+    <!-- Umumiy uslublar fayli -->
+    <link rel="stylesheet" href="main.css"> 
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="login-page">
 
     <div class="login-container">
-        <h2>Tizimga Kirish</h2>
+        <h2 class="brand-logo">MANUS</h2>
+        <p class="login-description">Hisobotlarni boshqarish tizimiga xush kelibsiz!</p>
         <form id="login-form">
-            <input type="text" id="username" class="input-field" placeholder="Loginni kiriting" required>
-            <input type="password" id="password" class="input-field" placeholder="Parolni kiriting" required>
-            <button type="submit" class="login-btn">KIRISH</button>
+            <div class="form-group">
+                <input type="text" id="username" class="form-control" placeholder="Loginni kiriting" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" class="form-control" placeholder="Parolni kiriting" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary login-btn">KIRISH</button>
         </form>
-        <p id="error-message"></p>
+        <p id="error-message" class="error-text"></p>
     </div>
 
     <script src="login.js"></script>

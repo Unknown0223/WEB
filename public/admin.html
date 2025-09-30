@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boshqaruv Paneli</title>
     
-    <!-- WebDataRocks Pivot Grid uchun stillar -->
+    <!-- Tashqi kutubxonalar -->
     <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet" />
-
-    <!-- Asosiy stillar, Google Fonts va ikonkalar -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,20 +17,19 @@
 <body class="admin-page">
 
     <div class="admin-layout">
-        <!-- 1. YON MENYU (SIDEBAR ) -->
+        <!-- 1. YON PANEL (SIDEBAR ) -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2 class="brand-logo">MANUS</h2>
+                <a href="/" class="brand-logo">MANUS</a>
             </div>
             <nav class="sidebar-nav">
                 <a href="#dashboard" class="nav-link active" data-page="dashboard">
                     <i data-feather="home"></i>
                     <span>Bosh Sahifa</span>
                 </a>
-                <!-- YANGI BO'LIM QO'SHILDI -->
                 <a href="#pivot-reports" class="nav-link" data-page="pivot-reports">
                     <i data-feather="bar-chart-2"></i>
-                    <span>Hisobotlar (Pivot)</span>
+                    <span>Interaktiv Hisobotlar</span>
                 </a>
                 <a href="#users" class="nav-link" data-page="users">
                     <i data-feather="users"></i>
@@ -53,52 +52,30 @@
             </div>
         </aside>
 
-        <!-- 2. ASOSIY KONTENT MAYDONI -->
+        <!-- 2. ASOSIY KONTENT -->
         <main class="main-content">
             <!-- Bosh Sahifa (Dashboard) -->
             <section id="dashboard" class="page active">
                 <h1 class="page-title">Boshqaruv Paneli</h1>
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background-color: rgba(0, 123, 255, 0.1);"><i data-feather="users" style="color: #007bff;"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Jami Foydalanuvchilar</span>
-                            <span class="stat-value" id="total-users-stat">...</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background-color: rgba(40, 167, 69, 0.1);"><i data-feather="map-pin" style="color: #28a745;"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Jami Filiallar</span>
-                            <span class="stat-value" id="total-locations-stat">...</span>
-                        </div>
-                    </div>
+                    <!-- Bu kartalar JS orqali to'ldiriladi -->
                 </div>
             </section>
 
-            <!-- YANGI HISOBOTLAR (PIVOT) BO'LIMI -->
-                        <!-- YANGI HISOBOTLAR (PIVOT) BO'LIMI (YANGILANGAN) -->
-                        <section id="pivot-reports" class="page">
-                            <div class="page-header">
-                                <h1 class="page-title">Interaktiv Hisobotlar</h1>
-                                <!-- Shablonlarni boshqarish paneli -->
-                                <div class="template-controls">
-                                    <select id="template-select" class="custom-select">
-                                        <option value="">Shablonni tanlang...</option>
-                                    </select>
-                                    <button id="load-template-btn" class="btn-secondary" title="Tanlangan shablonni yuklash"><i data-feather="download"></i> Yuklash</button>
-                                    <button id="save-template-btn" class="btn-secondary" title="Joriy ko'rinishni yangi shablon sifatida saqlash"><i data-feather="save"></i> Saqlash</button>
-                                    <button id="delete-template-btn" class="btn-danger" title="Tanlangan shablonni o'chirish"><i data-feather="trash-2"></i></button>
-                                </div>
-                            </div>
-                            <p class="page-description">
-                                Bu yerda siz barcha hisobotlarni tahlil qilishingiz, filtrlashingiz va o'zingizga kerakli ko'rinishda jamlanma (svod) olishingiz mumkin.
-                                Qatorlar, ustunlar va qiymatlar maydonlariga kerakli parametrlarni surib o'tkazing.
-                            </p>
-                            <!-- Pivot Grid uchun maxsus joy -->
-                            <div id="pivot-container"></div>
-                        </section>
-            
+            <!-- Interaktiv Hisobotlar (Pivot) -->
+            <section id="pivot-reports" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Interaktiv Hisobotlar</h1>
+                    <div class="template-controls">
+                        <button id="save-template-btn" class="btn btn-secondary"><i data-feather="save"></i> Shablonni Saqlash</button>
+                        <button id="load-templates-btn" class="btn btn-secondary"><i data-feather="folder"></i> Shablonlarni Ko'rish</button>
+                    </div>
+                </div>
+                <p class="page-description">
+                    Bu yerda siz barcha hisobotlarni tahlil qilishingiz, filtrlashingiz va o'zingizga kerakli ko'rinishda jamlanma (svod) olishingiz mumkin.
+                </p>
+                <div id="pivot-container"></div>
+            </section>
 
             <!-- Foydalanuvchilarni Boshqarish -->
             <section id="users" class="page">
@@ -106,24 +83,40 @@
                 <div class="content-grid">
                     <div class="card">
                         <h3 class="card-title">Mavjud Foydalanuvchilar</h3>
-                        <div class="settings-list" id="user-list">
-                            <div class="skeleton-item"></div><div class="skeleton-item"></div><div class="skeleton-item"></div>
+                        <div class="user-list" id="user-list">
+                            <!-- YUKLANISH HOLATI UCHUN SKELETON -->
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
                         </div>
                     </div>
                     <div class="card">
                         <h3 class="card-title">Yangi Foydalanuvchi Qo'shish</h3>
-                        <div class="user-form">
-                            <input type="text" id="new-username" placeholder="Login (username)">
-                            <input type="password" id="new-password" placeholder="Parol">
-                            <select id="new-user-role">
-                                <option value="operator" selected>Operator</option><option value="manager">Menejer</option><option value="admin">Admin</option>
-                            </select>
-                            <div id="new-user-locations-group">
-                                <label>Operator uchun filiallar:</label>
-                                <div class="checkbox-list" id="locations-checkbox-list"></div>
+                        <form id="add-user-form">
+                            <div class="form-group">
+                                <label for="new-username">Login (username)</label>
+                                <input type="text" id="new-username" class="form-control" placeholder="Foydalanuvchi logini">
                             </div>
-                            <button class="btn-primary" id="add-user-btn"><i data-feather="user-plus"></i><span>Foydalanuvchi Qo'shish</span></button>
-                        </div>
+                            <div class="form-group">
+                                <label for="new-password">Parol</label>
+                                <input type="password" id="new-password" class="form-control" placeholder="Kamida 8 belgi">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-user-role">Rol</label>
+                                <select id="new-user-role" class="form-control">
+                                    <option value="operator" selected>Operator</option>
+                                    <option value="manager">Menejer</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="new-user-locations-group">
+                                <label>Biriktirilgan filiallar:</label>
+                                <div class="checkbox-grid" id="locations-checkbox-list">
+                                    <!-- JS tomonidan to'ldiriladi -->
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="add-user-btn"><i data-feather="user-plus"></i> Foydalanuvchi Qo'shish</button>
+                        </form>
                     </div>
                 </div>
             </section>
@@ -131,34 +124,52 @@
             <!-- Jadval Sozlamalari -->
             <section id="table-settings" class="page">
                 <h1 class="page-title">Jadval Sozlamalari</h1>
-                <div class="table-settings-grid">
-                    <div class="card">
-                        <h3 class="card-title">Ustunlar</h3>
-                        <div class="settings-list" id="columns-settings"></div>
-                        <div class="add-item-form">
-                            <input type="text" id="new-column-name" placeholder="Yangi ustun nomi">
-                            <button class="btn-secondary" id="add-column-btn"><i data-feather="plus"></i></button>
+                <div class="accordion-container">
+                    <!-- Ustunlar -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3 class="card-title">Ustunlar</h3>
+                            <i data-feather="chevron-down" class="accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="settings-list" id="columns-settings"></div>
+                            <div class="add-item-form">
+                                <input type="text" id="new-column-name" class="form-control" placeholder="Yangi ustun nomi...">
+                                <button class="btn btn-secondary" id="add-column-btn"><i data-feather="plus"></i></button>
+                            </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <h3 class="card-title">Qatorlar</h3>
-                        <div class="settings-list" id="rows-settings"></div>
-                        <div class="add-item-form">
-                            <input type="text" id="new-row-name" placeholder="Yangi qator nomi">
-                            <button class="btn-secondary" id="add-row-btn"><i data-feather="plus"></i></button>
+                    <!-- Qatorlar -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3 class="card-title">Qatorlar</h3>
+                            <i data-feather="chevron-down" class="accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="settings-list" id="rows-settings"></div>
+                            <div class="add-item-form">
+                                <input type="text" id="new-row-name" class="form-control" placeholder="Yangi qator nomi...">
+                                <button class="btn btn-secondary" id="add-row-btn"><i data-feather="plus"></i></button>
+                            </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <h3 class="card-title">Filiallar</h3>
-                        <div class="settings-list" id="locations-settings"></div>
-                        <div class="add-item-form">
-                            <input type="text" id="new-location-name" placeholder="Yangi filial nomi">
-                            <button class="btn-secondary" id="add-location-btn"><i data-feather="plus"></i></button>
+                    <!-- Filiallar -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3 class="card-title">Filiallar</h3>
+                            <i data-feather="chevron-down" class="accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="settings-list" id="locations-settings"></div>
+                            <div class="add-item-form">
+                                <input type="text" id="new-location-name" class="form-control" placeholder="Yangi filial nomi...">
+                                <button class="btn btn-secondary" id="add-location-btn"><i data-feather="plus"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="page-footer">
-                    <button class="btn-primary" id="save-table-settings-btn"><i data-feather="save"></i><span>Jadval Sozlamalarini Saqlash</span></button>
+                    <button class="btn btn-primary" id="save-table-settings-btn"><i data-feather="save"></i> Jadval Sozlamalarini Saqlash</button>
                 </div>
             </section>
 
@@ -167,28 +178,57 @@
                 <h1 class="page-title">Telegram Bot Sozlamalari</h1>
                 <div class="card" style="max-width: 600px;">
                     <h3 class="card-title">Botni Ulash</h3>
-                    <div class="telegram-form">
+                    <div class="form-group">
                         <label for="bot-token">Bot Token</label>
-                        <input type="text" id="bot-token" placeholder="BotFather bergan tokenni kiriting">
-                        <label for="group-id">Guruh ID</label>
-                        <input type="text" id="group-id" placeholder="Guruh ID raqamini kiriting (minus bilan)">
-                        <button class="btn-primary" id="save-telegram-btn"><i data-feather="save"></i><span>Telegram Sozlamalarini Saqlash</span></button>
+                        <input type="text" id="bot-token" class="form-control" placeholder="BotFather bergan tokenni kiriting">
                     </div>
+                    <div class="form-group">
+                        <label for="group-id">Guruh ID</label>
+                        <input type="text" id="group-id" class="form-control" placeholder="Guruh ID raqamini kiriting (minus bilan)">
+                    </div>
+                    <button class="btn btn-primary" id="save-telegram-btn"><i data-feather="save"></i> Telegram Sozlamalarini Saqlash</button>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- MODAL OYNALAR -->
+    <!-- Shablonni saqlash uchun -->
+    <div id="save-template-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-target="save-template-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title">Shablonni Saqlash</h3>
+            <p>Joriy hisobot ko'rinishini keyinchalik tezda ochish uchun unga nom bering.</p>
+            <div class="form-group">
+                <label for="template-name-input">Shablon nomi</label>
+                <input type="text" id="template-name-input" class="form-control" placeholder="Masalan, 'Oylik tushum tahlili'">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary close-modal-btn" data-target="save-template-modal">Bekor qilish</button>
+                <button class="btn btn-primary" id="confirm-save-template-btn">Saqlash</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shablonlarni yuklash uchun -->
+    <div id="load-templates-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-target="load-templates-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title">Saqlangan Shablonlar</h3>
+            <p>Kerakli shablonni tanlab, uni yuklashingiz yoki o'chirishingiz mumkin.</p>
+            <div id="template-list-container" class="template-list">
+                <!-- JS tomonidan to'ldiriladi -->
+            </div>
+        </div>
+    </div>
+
     <!-- Bildirishnoma (Toast) -->
     <div id="toast-notification" class="toast hidden"></div>
     
-    <!-- WebDataRocks Pivot Grid uchun skript -->
+    <!-- JavaScript fayllari -->
     <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
     <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
-    
-    <!-- Ikonkalar uchun skript -->
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <!-- Asosiy JavaScript fayl -->
     <script src="admin.js"></script>
 </body>
 </html>
