@@ -1,0 +1,504 @@
+/* ===================================================== */
+/* === ADMIN SAHIFASI (admin.html) UCHUN MAXSUS STILLAR === */
+/* ===================================================== */
+
+/* Google Fonts import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'  );
+
+/* Asosiy o'zgaruvchilar (CSS Variables) */
+:root {
+    --bg-color: #1a1c23;
+    --surface-color: #242731;
+    --header-bg: #2c2f3a;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0a0;
+    --border-color: #3a3d4a;
+    --blue-color: #007bff;
+    --green-color: #4CAF50; /* Yashil rangni yorqinroq qilish */
+    --red-color: #dc3545;
+    --yellow-color: #ffc107;
+    --glow-color: #ffffff; /* Oq rangga o'zgartirish */
+    --glow-color-2: #4CAF50; /* Yashil rang */
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+    --glow-speed: 2s; /* Yorqinlik tezligini boshqarish uchun o'zgaruvchi */
+}
+
+body.admin-page {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 16px;
+}
+
+/* --- Asosiy Layout --- */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
+/* --- Yon Panel (Sidebar) --- */
+.sidebar {
+    background-color: var(--surface-color);
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+    padding: 15px 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: rgba(76, 175, 80, 0.1); /* Yashil rangli orqa fon */
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+}
+
+/* Animatsiya uchun keyframes */
+@keyframes glow-pulse {
+    0% {
+        color: var(--glow-color);
+        text-shadow: 0 0 5px var(--glow-color-2),
+                     0 0 10px var(--glow-color-2),
+                     0 0 15px var(--glow-color-2),
+                     0 0 20px var(--glow-color-2);
+    }
+    50% {
+        color: var(--glow-color-2);
+        text-shadow: 0 0 10px var(--glow-color-2),
+                     0 0 20px var(--glow-color-2),
+                     0 0 30px var(--glow-color-2),
+                     0 0 40px var(--glow-color-2);
+    }
+    100% {
+        color: var(--glow-color);
+        text-shadow: 0 0 5px var(--glow-color-2),
+                     0 0 10px var(--glow-color-2),
+                     0 0 15px var(--glow-color-2),
+                     0 0 20px var(--glow-color-2);
+    }
+}
+
+.brand-logo {
+    display: inline-block;
+    padding: 10px 25px;
+    color: var(--glow-color);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    
+    /* Doimiy yonib turuvchi animatsiya */
+    animation: glow-pulse var(--glow-speed) infinite ease-in-out;
+    
+    /* Matnga qo'shimcha stil */
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.brand-logo:hover {
+    animation-duration: calc(var(--glow-speed) * 0.7); /* Sichqoncha ustida tezlashtirish */
+    transform: scale(1.05);
+}
+
+/* Yorqinlik tezligini sozlash uchun qo'shimcha klasslar */
+.glow-slow {
+    --glow-speed: 3s;
+}
+
+.glow-medium {
+    --glow-speed: 2s;
+}
+
+.glow-fast {
+    --glow-speed: 1s;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.nav-link:hover {
+    background-color: var(--header-bg);
+    color: var(--text-primary);
+}
+
+.nav-link.active {
+    background-color: var(--blue-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.back-to-main-btn {
+/* --- Asosiy Kontent --- */
+.main-content {
+    padding: 30px 40px;
+    overflow-y: auto;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.page-description {
+    color: var(--text-secondary);
+    margin-top: 0;
+    margin-bottom: 30px;
+    max-width: 800px;
+}
+
+/* --- Umumiy Komponentlar --- */
+.card {
+    background-color: var(--surface-color);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.card-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+/* --- Tugmalar (Buttons) --- */
+.btn {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-primary { background-color: var(--blue-color); border-color: var(--blue-color); color: white; }
+.btn-primary:hover { background-color: #0069d9; border-color: #0062cc; transform: translateY(-2px); }
+.btn-secondary { background-color: var(--header-bg); color: var(--text-primary); }
+.btn-secondary:hover { background-color: #4a4e5c; border-color: #555; }
+.btn-danger { background-color: var(--red-color); border-color: var(--red-color); color: white; }
+.btn-danger:hover { background-color: #c82333; border-color: #bd2130; }
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: color 0.2s, background-color 0.2s;
+}
+.btn-icon:hover {
+    color: var(--text-primary);
+    background-color: var(--header-bg);
+}
+
+/* --- Formalar (Inputs, Selects) --- */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-secondary); font-size: 14px; }
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+.form-control:focus { outline: none; border-color: var(--blue-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); }
+
+/* --- Dashboard --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--surface-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+}
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.stat-info .stat-label { font-size: 14px; color: var(--text-secondary); display: block; }
+.stat-info .stat-value { font-size: 24px; font-weight: 700; }
+
+.daily-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.status-card {
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+.status-card:hover { transform: translateY(-3px); }
+.status-card.submitted { background-color: rgba(40, 167, 69, 0.2); color: var(--green-color); border: 1px solid var(--green-color); }
+.status-card.not-submitted { background-color: rgba(220, 53, 69, 0.15); color: var(--red-color); border: 1px solid var(--red-color); }
+
+/* --- Foydalanuvchilar Bo'limi --- */
+.user-list { display: flex; flex-direction: column; gap: 15px; }
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: var(--header-bg);
+    border-radius: 10px;
+    transition: background-color var(--transition-speed);
+}
+.user-item:hover { background-color: #3e4250; }
+.user-item.inactive { opacity: 0.5; }
+.user-item.inactive .username { text-decoration: line-through; }
+
+.user-avatar { position: relative; }
+.user-avatar .feather-user { width: 32px; height: 32px; }
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--surface-color);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.status-indicator.online { background-color: var(--green-color); }
+.status-indicator.offline { background-color: var(--text-secondary); }
+
+.user-details { flex-grow: 1; }
+.username { font-weight: 600; }
+.user-meta { font-size: 13px; color: var(--text-secondary); }
+.user-meta .role { text-transform: capitalize; }
+.user-status { font-size: 12px; color: var(--text-secondary); }
+.user-status .online-text { color: var(--green-color); font-weight: 600; margin-left: 5px; }
+.item-actions { display: flex; align-items: center; gap: 5px; }
+
+/* --- Rollar va Huquqlar --- */
+.roles-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+.role-card {
+    display: flex;
+    flex-direction: column;
+}
+.role-card[data-role="admin"] .permission-category,
+.role-card[data-role="admin"] .role-footer {
+    opacity: 0.6;
+    pointer-events: none;
+}
+.permission-category {
+    margin-bottom: 20px;
+}
+.permission-category-title {
+    font-weight: 600;
+    color: var(--blue-color);
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+.permission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+.role-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Checkbox Dizayni --- */
+.checkbox-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.checkbox-item { display: flex; align-items: center; cursor: pointer; }
+.checkbox-item input[type="checkbox"] { display: none; }
+.checkbox-item span { padding: 8px 12px; border-radius: 6px; background-color: var(--header-bg); border: 1px solid var(--border-color); transition: all 0.2s; font-size: 14px; }
+.checkbox-item:hover span { background-color: #4a4e5c; }
+.checkbox-item input[type="checkbox"]:checked + span { background-color: var(--blue-color); border-color: var(--blue-color); color: white; }
+
+/* --- Sozlamalar Sahifasi --- */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+.other-settings { display: flex; flex-direction: column; gap: 30px; }
+.accordion-container { display: flex; flex-direction: column; gap: 20px; }
+.accordion-item { background-color: var(--surface-color); border-radius: var(--border-radius); border: 1px solid var(--border-color); overflow: hidden; transition: all var(--transition-speed) ease; }
+.accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; cursor: pointer; }
+.accordion-header .card-title { margin: 0; padding: 0; border: none; font-size: 18px; }
+.accordion-icon { transition: transform var(--transition-speed) ease; }
+.accordion-item.active .accordion-icon { transform: rotate(180deg); }
+.accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; padding: 0 25px; }
+.accordion-item.active .accordion-content { padding-bottom: 25px; }
+.settings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.setting-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--header-bg); padding: 12px 15px; border-radius: 8px; }
+.setting-name { font-weight: 500; }
+.add-item-form { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; }
+.add-item-form .form-control { flex-grow: 1; }
+.page-footer { margin-top: 30px; display: flex; justify-content: flex-end; }
+
+/* --- Modal Oynalar --- */
+.modal {
+    position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex; justify-content: center; align-items: center;
+    backdrop-filter: blur(5px);
+    opacity: 0; visibility: hidden;
+    transition: opacity var(--transition-speed), visibility var(--transition-speed);
+}
+.modal:not(.hidden) { opacity: 1; visibility: visible; }
+.modal-content {
+    background-color: var(--surface-color);
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    width: 90%; max-width: 550px;
+    border-radius: 15px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform var(--transition-speed);
+}
+.modal:not(.hidden) .modal-content { transform: scale(1); }
+.close-modal-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 5px; }
+.modal-title { margin-top: 0; margin-bottom: 20px; font-size: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* --- Sessiyalar Ro'yxati --- */
+.sessions-list { display: flex; flex-direction: column; gap: 15px; max-height: 60vh; overflow-y: auto; }
+.session-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--header-bg);
+    border-radius: 8px;
+    border-left: 4px solid var(--border-color);
+}
+.session-item.current { border-left-color: var(--green-color); }
+.session-details div { font-size: 13px; color: var(--text-secondary); }
+.session-details div strong { color: var(--text-primary); }
+
+/* --- Shablonlar Ro'yxati --- */
+.template-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding: 5px; }
+.template-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--header-bg); padding: 10px 15px; border-radius: 8px; }
+.template-name { font-weight: 500; }
+.template-actions { display: flex; gap: 5px; }
+
+/* --- Bo'sh holat va Skelet stillari --- */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); border: 2px dashed var(--border-color); border-radius: var(--border-radius); }
+.empty-state.error { color: var(--red-color); border-color: var(--red-color); }
+.skeleton-item { background-color: var(--header-bg); border-radius: 8px; height: 80px; animation: pulse-bg 1.5s infinite ease-in-out; }
+@keyframes pulse-bg { 0% { background-color: var(--header-bg); } 50% { background-color: #3c404d; } 100% { background-color: var(--header-bg); } }
+
+/* --- Toast (Bildirishnoma) --- */
+.toast {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--green-color); color: white;
+    padding: 15px 25px; border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 2000; font-weight: 600;
+    opacity: 0; visibility: hidden; transition: all 0.5s;
+}
+.toast:not(.hidden) { opacity: 1; visibility: visible; bottom: 30px; }
+.toast.error { background-color: var(--red-color); }
+
+/* --- Moslashuvchanlik (Responsiveness) --- */
+@media (max-width: 1200px) {
+    .settings-layout, .roles-container { grid-template-columns: 1fr; }
+}
+@media (max-width: 992px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
+    .main-content { padding: 20px; }
+}
+@media (max-width: 768px) {
+    .stats-grid { grid-template-columns: 1fr; }
+}

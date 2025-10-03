@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boshqaruv Paneli</title>
+    
+    <!-- Tashqi kutubxonalar -->
+    <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" href="admin.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+
+    <div class="admin-layout">
+        <!-- 1. YON PANEL (SIDEBAR ) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="brand-logo">MANUS</a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <i data-feather="home"></i>
+                    <span>Bosh Sahifa</span>
+                </a>
+                <a href="#pivot-reports" class="nav-link" data-page="pivot-reports" data-permission="reports:view_all">
+                    <i data-feather="bar-chart-2"></i>
+                    <span>Interaktiv Hisobotlar</span>
+                </a>
+                <a href="#users" class="nav-link" data-page="users" data-permission="users:view">
+                    <i data-feather="users"></i>
+                    <span>Foydalanuvchilar</span>
+                </a>
+                <a href="#roles" class="nav-link" data-page="roles" data-permission="roles:manage">
+                    <i data-feather="shield"></i>
+                    <span>Rollar va Huquqlar</span>
+                </a>
+                <a href="#settings" class="nav-link" data-page="settings" data-permission="settings:view">
+                    <i data-feather="settings"></i>
+                    <span>Sozlamalar</span>
+                </a>
+                <a href="#admin-controls" class="nav-link" data-page="admin-controls" data-permission="admin:manage">
+                    <i data-feather="sliders"></i>
+                    <span>Admin Boshqaruvi</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="back-to-main-btn">
+                    <i data-feather="arrow-left-circle"></i>
+                    <span>Asosiy Sahifaga</span>
+                </a>
+                <button id="logout-btn" class="btn btn-danger" style="width: 100%; margin-top: 10px;">
+                    <i data-feather="log-out"></i>
+                    <span>Chiqish</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 2. ASOSIY KONTENT -->
+        <main class="main-content">
+            <!-- Bosh Sahifa (Dashboard) -->
+            <section id="dashboard" class="page active">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Boshqaruv Paneli</h1>
+                        <p class="page-description">Tizimning umumiy holati va statistik ma'lumotlar.</p>
+                    </div>
+                </div>
+                <div class="stats-grid" id="stats-grid"></div>
+                <div class="card" style="margin-top: 30px;">
+                    <div class="page-header">
+                        <h3 class="card-title" style="border: none; padding: 0;">Kunlik Hisobot Statusi</h3>
+                        <input type="text" id="dashboard-date-picker" class="form-control" style="width: 200px;" placeholder="Sanani tanlang">
+                    </div>
+                    <div class="daily-status-grid" id="daily-status-grid"></div>
+                </div>
+            </section>
+
+            <!-- Interaktiv Hisobotlar (Pivot) -->
+            <section id="pivot-reports" class="page" data-permission="reports:view_all">
+                <div class="page-header">
+                    <h1 class="page-title">Interaktiv Hisobotlar</h1>
+                    <div class="template-controls">
+                        <button id="save-template-btn" class="btn btn-secondary"><i data-feather="save"></i> Shablonni Saqlash</button>
+                        <button id="load-templates-btn" class="btn btn-secondary"><i data-feather="folder"></i> Shablonlarni Ko'rish</button>
+                    </div>
+                </div>
+                <p class="page-description">
+                    Bu yerda siz barcha hisobotlarni tahlil qilishingiz, filtrlashingiz va o'zingizga kerakli ko'rinishda jamlanma (svod) olishingiz mumkin.
+                </p>
+                <div id="pivot-container"></div>
+            </section>
+
+            <!-- Foydalanuvchilarni Boshqarish -->
+            <section id="users" class="page" data-permission="users:view">
+                <div class="page-header">
+                    <h1 class="page-title">Foydalanuvchilarni Boshqarish</h1>
+                    <button id="open-add-user-modal-btn" class="btn btn-primary" data-permission="users:create"><i data-feather="user-plus"></i> Yangi Foydalanuvchi</button>
+                </div>
+                <div class="card">
+                    <div class="user-list" id="user-list"></div>
+                </div>
+            </section>
+
+            <!-- Rollar va Huquqlar -->
+            <section id="roles" class="page" data-permission="roles:manage">
+                <h1 class="page-title">Rollar va Huquqlar</h1>
+                <p class="page-description">Bu yerda har bir rol uchun ruxsat etilgan amallarni belgilashingiz mumkin. "Admin" rolini o'zgartirib bo'lmaydi.</p>
+                <div id="roles-container" class="roles-container">
+                    <!-- JS orqali to'ldiriladi -->
+                </div>
+            </section>
+
+            <!-- Admin Boshqaruvi -->
+            <section id="admin-controls" class="page" data-permission="admin:manage">
+                <div class="page-header">
+                    <h1 class="page-title">Admin Boshqaruvi</h1>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tizim Sozlamalari</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Yorqinlik Effekti Tezligi</label>
+                            <div class="btn-group" style="width: 100%; margin-bottom: 20px;">
+                                <button class="btn btn-outline-secondary glow-speed-btn active" data-speed="slow">Sekin</button>
+                                <button class="btn btn-outline-secondary glow-speed-btn" data-speed="medium">O'rtacha</button>
+                                <button class="btn btn-outline-secondary glow-speed-btn" data-speed="fast">Tez</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button id="clear-cache-btn" class="btn btn-warning">
+                                <i data-feather="refresh-cw"></i> Keshni Tozalash
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">O'zgartirishlar Tarixi</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Sana</th>
+                                        <th>Joylashuv</th>
+                                        <th>Maydon</th>
+                                        <th>Eski Qiymat</th>
+                                        <th>Yangi Qiymat</th>
+                                        <th>O'zgartirgan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body">
+                                    <!-- History will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="prev-page" class="btn btn-outline-secondary">Oldingi</button>
+                            <span id="page-info">1/1</span>
+                            <button id="next-page" class="btn btn-outline-secondary">Keyingi</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sozlamalar -->
+            <section id="settings" class="page" data-permission="settings:view">
+                <h1 class="page-title">Sozlamalar</h1>
+                <div class="settings-layout">
+                    <div class="card" data-permission="settings:edit_table">
+                        <h3 class="card-title">Jadval Sozlamalari</h3>
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <div class="accordion-header"><h3 class="card-title">Ustunlar</h3><i data-feather="chevron-down" class="accordion-icon"></i></div>
+                                <div class="accordion-content">
+                                    <div class="settings-list" id="columns-settings"></div>
+                                    <div class="add-item-form"><input type="text" id="new-column-name" class="form-control" placeholder="Yangi ustun..."><button class="btn btn-secondary" id="add-column-btn"><i data-feather="plus"></i></button></div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header"><h3 class="card-title">Qatorlar</h3><i data-feather="chevron-down" class="accordion-icon"></i></div>
+                                <div class="accordion-content">
+                                    <div class="settings-list" id="rows-settings"></div>
+                                    <div class="add-item-form"><input type="text" id="new-row-name" class="form-control" placeholder="Yangi qator..."><button class="btn btn-secondary" id="add-row-btn"><i data-feather="plus"></i></button></div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header"><h3 class="card-title">Filiallar</h3><i data-feather="chevron-down" class="accordion-icon"></i></div>
+                                <div class="accordion-content">
+                                    <div class="settings-list" id="locations-settings"></div>
+                                    <div class="add-item-form"><input type="text" id="new-location-name" class="form-control" placeholder="Yangi filial..."><button class="btn btn-secondary" id="add-location-btn"><i data-feather="plus"></i></button></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-footer">
+                            <button class="btn btn-primary" id="save-table-settings-btn"><i data-feather="save"></i> Jadval Sozlamalarini Saqlash</button>
+                        </div>
+                    </div>
+                    <div class="other-settings">
+                        <div class="card" data-permission="settings:edit_telegram">
+                            <h3 class="card-title">Telegram Bot</h3>
+                            <div class="form-group"><label for="bot-token">Bot Token</label><input type="text" id="bot-token" class="form-control" placeholder="BotFather bergan tokenni kiriting"></div>
+                            <div class="form-group"><label for="group-id">Guruh ID</label><input type="text" id="group-id" class="form-control" placeholder="Guruh ID raqamini kiriting (minus bilan)"></div>
+                            <button class="btn btn-primary" id="save-telegram-btn"><i data-feather="save"></i> Saqlash</button>
+                        </div>
+                        <div class="card" data-permission="settings:edit_general">
+                            <h3 class="card-title">Umumiy</h3>
+                            <div class="form-group"><label for="pagination-limit">Sahifadagi hisobotlar soni</label><input type="number" id="pagination-limit" class="form-control" min="5" max="100" placeholder="20"></div>
+                            <button class="btn btn-primary" id="save-general-settings-btn"><i data-feather="save"></i> Saqlash</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL OYNALAR -->
+    <!-- Foydalanuvchi qo'shish/tahrirlash uchun -->
+    <div id="user-form-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-target="user-form-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title" id="user-modal-title"></h3>
+            <form id="user-form">
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group">
+                    <label for="user-username">Login (username)</label>
+                    <input type="text" id="user-username" class="form-control" required>
+                </div>
+                <div class="form-group" id="password-group">
+                    <label for="user-password">Parol</label>
+                    <input type="password" id="user-password" class="form-control" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="user-role">Rol</label>
+                    <select id="user-role" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label for="user-device-limit">Ruxsat etilgan qurilmalar soni</label>
+                    <input type="number" id="user-device-limit" class="form-control" value="1" min="1">
+                </div>
+                <div class="form-group" id="user-locations-group">
+                    <label>Biriktirilgan filiallar:</label>
+                    <div class="checkbox-grid" id="locations-checkbox-list"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-modal-btn" data-target="user-form-modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sessiyalarni boshqarish uchun -->
+    <div id="sessions-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-target="sessions-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title" id="sessions-modal-title"></h3>
+            <div id="sessions-list-container" class="sessions-list"></div>
+        </div>
+    </div>
+    
+    <!-- Kechikish izohini ko'rish uchun -->
+    <div id="comment-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="close-modal-btn" data-target="comment-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title">Kechikish Sababi</h3>
+            <p id="comment-modal-text"></p>
+        </div>
+    </div>
+
+    <!-- Shablonlar uchun modal oynalar... (o'zgarishsiz) -->
+    <div id="save-template-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-target="save-template-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title">Shablonni Saqlash</h3>
+            <div class="form-group"><label for="template-name-input">Shablon nomi</label><input type="text" id="template-name-input" class="form-control" placeholder="Masalan, 'Oylik tushum tahlili'"></div>
+            <div class="modal-actions"><button class="btn btn-secondary close-modal-btn" data-target="save-template-modal">Bekor qilish</button><button class="btn btn-primary" id="confirm-save-template-btn">Saqlash</button></div>
+        </div>
+    </div>
+    <div id="load-templates-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn" data-target="load-templates-modal"><i data-feather="x"></i></button>
+            <h3 class="modal-title">Saqlangan Shablonlar</h3>
+            <div id="template-list-container" class="template-list"></div>
+        </div>
+    </div>
+
+    <!-- Bildirishnoma (Toast) -->
+    <div id="toast-notification" class="toast hidden"></div>
+    
+    <!-- JavaScript fayllari -->
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/uz.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

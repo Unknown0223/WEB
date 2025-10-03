@@ -1,0 +1,503 @@
+/* =================================================================== */
+/* === ASOSIY (index.html) VA KIRISH (login.html) UCHUN UMUMIY STILLAR === */
+/* =================================================================== */
+
+/* Google Fonts import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'  );
+
+/* Asosiy o'zgaruvchilar (CSS Variables) */
+:root {
+    --bg-color: #1a1c23;
+    --surface-color: #242731;
+    --header-bg: #2c2f3a;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0a0;
+    --border-color: #3a3d4a;
+    --blue-color: #007bff;
+    --green-color: #28a745;
+    --red-color: #dc3545;
+    --yellow-color: #ffc107;
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+}
+
+/* --- Kirish sahifasi uchun brend logotipi effekti --- */
+@keyframes glow-pulse {
+    0% {
+        color: #ffffff;
+        text-shadow: 0 0 5px #4CAF50,
+                     0 0 10px #4CAF50,
+                     0 0 15px #4CAF50,
+                     0 0 20px #4CAF50;
+    }
+    50% {
+        color: #4CAF50;
+        text-shadow: 0 0 10px #4CAF50,
+                     0 0 20px #4CAF50,
+                     0 0 30px #4CAF50,
+                     0 0 40px #4CAF50;
+    }
+    100% {
+        color: #ffffff;
+        text-shadow: 0 0 5px #4CAF50,
+                     0 0 10px #4CAF50,
+                     0 0 15px #4CAF50,
+                     0 0 20px #4CAF50;
+    }
+}
+
+.login-page .login-container {
+    background: rgba(26, 28, 35, 0.9);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.2);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.login-page .brand-logo {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 0 0 30px 0;
+    position: relative;
+    font-family: 'Arial', sans-serif;
+    
+    /* Doimiy yonib turuvchi animatsiya */
+    animation: glow-pulse 2s infinite ease-in-out;
+    
+    /* Qo'shimcha stil */
+    border: 2px solid rgba(76, 175, 80, 0.3);
+    border-radius: 8px;
+    background: rgba(76, 175, 80, 0.1);
+    transition: all 0.3s ease;
+}
+
+.login-page .brand-logo:hover {
+    animation-duration: 1.4s; /* Sichqoncha ustida tezlashtirish */
+    transform: scale(1.05);
+    border-color: rgba(76, 175, 80, 0.5);
+}
+
+/* --- Umumiy stillar --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Asosiy sahifa layouti --- */
+.main-wrapper {
+    display: grid;
+    grid-template-columns: 320px 1fr 280px; 
+    gap: 25px;
+    padding: 25px;
+    max-width: 1920px;
+    margin: 0 auto;
+    height: calc(100vh - 50px);
+}
+
+.sidebar, .container, .right-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar, .container, .global-controls, .user-profile-card {
+    background-color: var(--surface-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.container {
+    padding: 25px;
+}
+
+.right-column {
+    gap: 25px;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* --- Chap panel (Sidebar) --- */
+.filter-date-wrapper {
+    margin-bottom: 15px;
+}
+.filter-date-wrapper label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+.search-wrapper { margin-bottom: 15px; }
+
+.filter-controls { margin-bottom: 15px; }
+.filter-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.filter-btn {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--header-bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all var(--transition-speed);
+}
+.filter-btn:hover { background-color: #4a4e5c; color: var(--text-primary); }
+.filter-btn.active { 
+    background-color: var(--blue-color); 
+    color: white; 
+    border-color: var(--blue-color);
+}
+
+.report-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-right: -10px;
+    padding-right: 10px;
+}
+.report-item {
+    background-color: var(--header-bg);
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    border-left: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.report-item:hover {
+    transform: translateX(5px);
+    background-color: #3e4250;
+}
+.report-item.active {
+    background-color: #3e4250;
+    border-left-color: var(--green-color);
+}
+.report-item-content {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.report-edit-info {
+    font-size: 12px;
+    color: var(--yellow-color);
+    font-weight: 600;
+}
+
+/* Pagination stillari */
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 15px;
+}
+.pagination-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed);
+}
+.pagination-btn:hover:not(:disabled) {
+    border-color: var(--blue-color);
+    color: var(--blue-color);
+}
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#page-info {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+
+/* --- Markaziy qism (Container) --- */
+.header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 20px;
+}
+.header-left { display: flex; align-items: center; gap: 15px; }
+.header-center { justify-self: center; }
+.header-right { justify-self: end; }
+
+.badge {
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+}
+#report-id-badge.new { background-color: var(--blue-color); }
+#report-id-badge.saved { background-color: var(--green-color); }
+
+/* --- O'ng panel (Right Column) --- */
+.user-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.user-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background-color: var(--blue-color);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.user-details .username { font-weight: 600; display: block; }
+.user-details .role { font-size: 14px; color: var(--text-secondary); text-transform: capitalize; }
+
+.global-controls { display: flex; flex-direction: column; gap: 10px; }
+.global-btn {
+    padding: 12px 15px;
+    color: var(--text-primary);
+    background-color: var(--header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all var(--transition-speed);
+    text-decoration: none;
+}
+.global-btn:hover { border-color: var(--blue-color); background-color: #3e4250; }
+.global-btn.logout { border-color: var(--red-color); }
+.global-btn.logout:hover { background-color: var(--red-color); color: white; }
+
+/* --- Jadval stillari --- */
+.table-wrapper { overflow-x: auto; }
+#main-table { width: 100%; border-collapse: collapse; }
+#main-table th { text-align: left; padding: 10px 15px; color: var(--text-secondary); font-weight: 500; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+#main-table td { padding: 8px 15px; vertical-align: middle; }
+#main-table tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); }
+#main-table tbody td:first-child { font-weight: 600; }
+#main-table tfoot td { font-weight: 700; font-size: 18px; padding-top: 20px; text-align: right; }
+#main-table tfoot td:first-child { text-align: left; }
+#grand-total { color: var(--green-color); }
+
+/* --- Forma elementlari --- */
+.form-control, .date-badge, .location-badge {
+    width: 100%; padding: 10px 15px; border-radius: 8px;
+    border: 1px solid var(--border-color); background-color: var(--bg-color);
+    color: var(--text-primary); font-size: 14px; box-sizing: border-box;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+.form-control:focus, .date-badge:focus, .location-badge:focus {
+    outline: none; border-color: var(--blue-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+.flatpickr-input { background-color: var(--bg-color) !important; }
+
+/* --- Tugmalar (Buttons) --- */
+.controls { display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+.btn {
+    padding: 12px 25px; border: none; border-radius: 8px;
+    font-weight: 600; font-size: 14px; cursor: pointer;
+    transition: all var(--transition-speed);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.btn-primary { background-color: var(--blue-color); color: white; }
+.btn-success { background-color: var(--green-color); color: white; }
+.btn-warning { background-color: var(--yellow-color); color: var(--bg-color); }
+.icon-btn {
+    background: none; border: 1px solid var(--border-color); color: var(--text-secondary);
+    border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all var(--transition-speed);
+}
+.icon-btn:hover { color: var(--text-primary); border-color: var(--yellow-color); }
+
+/* --- Xulosa (Summary) --- */
+.summary-wrapper { margin-top: 30px; background-color: var(--header-bg); border-radius: var(--border-radius); padding: 25px; }
+.summary-title { text-align: center; color: var(--blue-color); margin-top: 0; margin-bottom: 20px; }
+.summary-list .summary-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+.summary-list .summary-item:last-child { border-bottom: none; }
+.summary-total { margin-top: 20px; background-color: var(--green-color); color: #fff; padding: 15px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 700; }
+
+/* --- Kirish sahifasi (Login) --- */
+body.login-page { display: flex; justify-content: center; align-items: center; height: 100vh; }
+.login-container {
+    background-color: var(--surface-color); padding: 40px; border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); width: 100%; max-width: 400px;
+    text-align: center; border: 1px solid var(--border-color);
+}
+.login-container .brand-logo { font-size: 32px; color: var(--blue-color); text-decoration: none; }
+.login-description { color: var(--text-secondary); margin-bottom: 30px; }
+.form-group { margin-bottom: 20px; text-align: left; }
+.login-btn { width: 100%; }
+.error-text { color: var(--red-color); margin-top: 15px; min-height: 1.2em; font-weight: 500; }
+
+/* --- Yordamchi klasslar va animatsiyalar --- */
+.hidden { display: none !important; }
+
+/* --- Modal Oynalar --- */
+.modal {
+    position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex; justify-content: center; align-items: center;
+    backdrop-filter: blur(5px);
+    opacity: 0; visibility: hidden;
+    transition: opacity var(--transition-speed), visibility var(--transition-speed);
+}
+.modal:not(.hidden) { opacity: 1; visibility: visible; }
+.modal-content {
+    background-color: var(--surface-color);
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    width: 90%; max-width: 700px;
+    border-radius: 15px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform var(--transition-speed);
+}
+.modal:not(.hidden) .modal-content { transform: scale(1); }
+.close-modal-btn {
+    position: absolute; top: 15px; right: 15px;
+    background: none; border: none; color: var(--text-secondary);
+    cursor: pointer; padding: 5px;
+}
+.modal-title { margin-top: 0; margin-bottom: 20px; font-size: 22px; }
+.modal-body { 
+    max-height: 60vh; 
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+/* Tarix bloki uchun stillar */
+.history-entry {
+    background-color: var(--header-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid var(--blue-color);
+}
+.history-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+.history-meta strong { color: var(--text-primary); }
+.history-changes { font-size: 14px; line-height: 1.6; }
+.history-changes .change-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+.history-changes .change-item .key { font-weight: 600; }
+.history-changes .change-item .values { text-align: right; }
+.history-changes .change-item .old-value { text-decoration: line-through; color: var(--text-secondary); margin-right: 10px; }
+.history-changes .change-item .new-value { font-weight: bold; color: var(--green-color); }
+
+/* Toast (Bildirishnoma) */
+.toast {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--green-color); color: white;
+    padding: 15px 25px; border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 2000; font-weight: 600;
+    opacity: 0; visibility: hidden; transition: all 0.5s;
+}
+.toast:not(.hidden) { opacity: 1; visibility: visible; bottom: 30px; }
+.toast.error { background-color: var(--red-color); }
+
+/* Skelet animatsiyasi */
+.skeleton-item {
+    background-color: var(--header-bg);
+    border-radius: 8px; height: 60px; margin-bottom: 10px;
+    animation: pulse-bg 1.5s infinite ease-in-out;
+}
+@keyframes pulse-bg {
+    0% { background-color: var(--header-bg); }
+    50% { background-color: #3c404d; }
+    100% { background-color: var(--header-bg); }
+}
+.empty-state {
+    text-align: center; padding: 40px 20px; color: var(--text-secondary);
+    border: 2px dashed var(--border-color); border-radius: var(--border-radius);
+}
+
+/* Spinner animatsiyasi */
+.spinner {
+    display: inline-block; width: 1em; height: 1em;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%; border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Moslashuvchanlik (Responsiveness) --- */
+@media (max-width: 1200px) {
+    .main-wrapper {
+        grid-template-columns: 320px 1fr;
+    }
+    .right-column {
+        grid-column: 1 / -1; /* To'liq kenglikka yoyish */
+        order: -1; /* Yuqoriga chiqarish */
+    }
+    .user-profile-card {
+        max-width: 400px;
+    }
+    .global-controls {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-wrapper {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+    .header {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .header-left, .header-center, .header-right {
+        justify-self: stretch;
+        width: 100%;
+    }
+    #location-select { width: 100%; }
+    .controls {
+        flex-direction: column;
+    }
+}
