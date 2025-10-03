@@ -1,3 +1,6 @@
 Flask
 python-telegram-bot
+<<<<<<< HEAD
 requests
+=======
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973

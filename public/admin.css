@@ -3,7 +3,11 @@
 /* ===================================================== */
 
 /* Google Fonts import */
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'  );
+=======
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' );
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 
 /* Asosiy o'zgaruvchilar (CSS Variables) */
 :root {
@@ -14,6 +18,7 @@
     --text-secondary: #a0a0a0;
     --border-color: #3a3d4a;
     --blue-color: #007bff;
+<<<<<<< HEAD
     --green-color: #4CAF50; /* Yashil rangni yorqinroq qilish */
     --red-color: #dc3545;
     --yellow-color: #ffc107;
@@ -22,6 +27,13 @@
     --border-radius: 12px;
     --transition-speed: 0.3s;
     --glow-speed: 2s; /* Yorqinlik tezligini boshqarish uchun o'zgaruvchi */
+=======
+    --green-color: #28a745;
+    --red-color: #dc3545;
+    --yellow-color: #ffc107;
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 }
 
 body.admin-page {
@@ -50,6 +62,7 @@ body.admin-page {
 
 .sidebar-header {
     margin-bottom: 30px;
+<<<<<<< HEAD
     padding: 15px 10px;
     text-align: center;
     position: relative;
@@ -122,6 +135,18 @@ body.admin-page {
 
 .glow-fast {
     --glow-speed: 1s;
+=======
+    padding: 0 10px;
+}
+
+.brand-logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--blue-color);
+    text-align: center;
+    letter-spacing: 2px;
+    text-decoration: none;
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 }
 
 .sidebar-nav {
@@ -155,11 +180,34 @@ body.admin-page {
 
 .sidebar-footer {
     margin-top: auto;
+<<<<<<< HEAD
     padding-top: 20px;
     border-top: 1px solid var(--border-color);
 }
 
 .back-to-main-btn {
+=======
+}
+
+.back-to-main-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: var(--header-bg);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color var(--transition-speed);
+}
+
+.back-to-main-btn:hover {
+    background-color: #4a4e5c;
+}
+
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 /* --- Asosiy Kontent --- */
 .main-content {
     padding: 30px 40px;
@@ -220,6 +268,15 @@ body.admin-page {
     padding-bottom: 15px;
 }
 
+<<<<<<< HEAD
+=======
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 /* --- Tugmalar (Buttons) --- */
 .btn {
     padding: 10px 20px;
@@ -236,6 +293,7 @@ body.admin-page {
     font-size: 14px;
 }
 
+<<<<<<< HEAD
 .btn-primary { background-color: var(--blue-color); border-color: var(--blue-color); color: white; }
 .btn-primary:hover { background-color: #0069d9; border-color: #0062cc; transform: translateY(-2px); }
 .btn-secondary { background-color: var(--header-bg); color: var(--text-primary); }
@@ -260,6 +318,39 @@ body.admin-page {
 /* --- Formalar (Inputs, Selects) --- */
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-secondary); font-size: 14px; }
+=======
+.btn-primary {
+    background-color: var(--blue-color);
+    border-color: var(--blue-color);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--header-bg);
+    color: var(--text-primary);
+}
+.btn-secondary:hover {
+    background-color: #4a4e5c;
+    border-color: #555;
+}
+
+/* --- Formalar (Inputs, Selects) --- */
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 .form-control {
     width: 100%;
     padding: 12px;
@@ -271,6 +362,7 @@ body.admin-page {
     box-sizing: border-box;
     transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
+<<<<<<< HEAD
 .form-control:focus { outline: none; border-color: var(--blue-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); }
 
 /* --- Dashboard --- */
@@ -421,6 +513,127 @@ body.admin-page {
 .setting-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--header-bg); padding: 12px 15px; border-radius: 8px; }
 .setting-name { font-weight: 500; }
 .add-item-form { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; }
+=======
+.form-control:focus {
+    outline: none;
+    border-color: var(--blue-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+/* --- Foydalanuvchilar Bo'limi --- */
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--header-bg);
+    border-radius: 8px;
+    transition: background-color var(--transition-speed);
+}
+.user-item:hover {
+    background-color: #3e4250;
+}
+.user-item.inactive {
+    opacity: 0.6;
+}
+.user-item.inactive .username {
+    text-decoration: line-through;
+}
+.user-info { display: flex; flex-direction: column; gap: 4px; }
+.username { font-weight: 600; }
+.user-role { font-size: 12px; color: var(--blue-color); font-weight: bold; text-transform: uppercase; }
+.locations { font-size: 12px; color: var(--text-secondary); }
+.item-actions button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+}
+.item-actions button:hover { color: var(--text-primary); }
+.item-actions .activate-user-btn { color: var(--green-color) !important; }
+.item-actions .deactivate-user-btn { color: var(--yellow-color) !important; }
+.item-actions .delete-btn { color: var(--red-color) !important; }
+
+/* --- Checkbox Dizayni --- */
+.checkbox-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.checkbox-item { display: flex; align-items: center; cursor: pointer; }
+.checkbox-item input[type="checkbox"] { display: none; }
+.checkbox-item span {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: var(--header-bg);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+    font-size: 14px;
+}
+.checkbox-item:hover span { background-color: #4a4e5c; }
+.checkbox-item input[type="checkbox"]:checked + span {
+    background-color: var(--blue-color);
+    border-color: var(--blue-color);
+    color: white;
+}
+
+/* --- Jadval Sozlamalari (Akkordeon) --- */
+.accordion-container { display: flex; flex-direction: column; gap: 20px; }
+.accordion-item {
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+}
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    cursor: pointer;
+}
+.accordion-header .card-title { margin: 0; padding: 0; border: none; font-size: 18px; }
+.accordion-icon { transition: transform var(--transition-speed) ease; }
+.accordion-item.active .accordion-icon { transform: rotate(180deg); }
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    padding: 0 25px;
+}
+.accordion-item.active .accordion-content { padding-bottom: 25px; }
+.settings-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--header-bg);
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+.setting-name { font-weight: 500; }
+.add-item-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 .add-item-form .form-control { flex-grow: 1; }
 .page-footer { margin-top: 30px; display: flex; justify-content: flex-end; }
 
@@ -438,7 +651,11 @@ body.admin-page {
     background-color: var(--surface-color);
     padding: 30px;
     border: 1px solid var(--border-color);
+<<<<<<< HEAD
     width: 90%; max-width: 550px;
+=======
+    width: 90%; max-width: 500px;
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
     border-radius: 15px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -446,6 +663,7 @@ body.admin-page {
     transition: transform var(--transition-speed);
 }
 .modal:not(.hidden) .modal-content { transform: scale(1); }
+<<<<<<< HEAD
 .close-modal-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 5px; }
 .modal-title { margin-top: 0; margin-bottom: 20px; font-size: 20px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
@@ -476,6 +694,51 @@ body.admin-page {
 .empty-state.error { color: var(--red-color); border-color: var(--red-color); }
 .skeleton-item { background-color: var(--header-bg); border-radius: 8px; height: 80px; animation: pulse-bg 1.5s infinite ease-in-out; }
 @keyframes pulse-bg { 0% { background-color: var(--header-bg); } 50% { background-color: #3c404d; } 100% { background-color: var(--header-bg); } }
+=======
+.close-modal-btn {
+    position: absolute; top: 15px; right: 15px;
+    background: none; border: none; color: var(--text-secondary);
+    cursor: pointer; padding: 5px;
+}
+.modal-title { margin-top: 0; margin-bottom: 10px; font-size: 20px; }
+.modal-content p { margin-top: 0; margin-bottom: 20px; color: var(--text-secondary); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* --- Shablonlar Ro'yxati --- */
+.template-list {
+    display: flex; flex-direction: column; gap: 10px;
+    max-height: 400px; overflow-y: auto; padding: 5px;
+}
+.template-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: var(--header-bg); padding: 10px 15px; border-radius: 8px;
+}
+.template-name { font-weight: 500; }
+.template-actions { display: flex; gap: 5px; }
+.template-actions button { color: var(--text-secondary); }
+.template-actions .load-btn:hover { color: var(--blue-color); }
+.template-actions .delete-btn:hover { color: var(--red-color); }
+
+/* --- Bo'sh holat va Skelet stillari --- */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+}
+.skeleton-item {
+    background-color: var(--header-bg);
+    border-radius: 8px;
+    height: 60px;
+    animation: pulse-bg 1.5s infinite ease-in-out;
+}
+@keyframes pulse-bg {
+    0% { background-color: var(--header-bg); }
+    50% { background-color: #3c404d; }
+    100% { background-color: var(--header-bg); }
+}
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 
 /* --- Toast (Bildirishnoma) --- */
 .toast {
@@ -491,6 +754,7 @@ body.admin-page {
 .toast.error { background-color: var(--red-color); }
 
 /* --- Moslashuvchanlik (Responsiveness) --- */
+<<<<<<< HEAD
 @media (max-width: 1200px) {
     .settings-layout, .roles-container { grid-template-columns: 1fr; }
 }
@@ -501,4 +765,22 @@ body.admin-page {
 }
 @media (max-width: 768px) {
     .stats-grid { grid-template-columns: 1fr; }
+=======
+@media (max-width: 992px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        /* Kichik ekranlarda yon panelni yashirish yoki gorizontal qilish mumkin */
+        /* Hozircha o'zgarishsiz qoldiramiz, lekin bu yerda o'zgartirish mumkin */
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .main-content {
+        padding: 20px;
+    }
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 }

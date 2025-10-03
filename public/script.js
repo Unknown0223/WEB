@@ -1,13 +1,24 @@
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', ( ) => {
     // --- Global Holat (State) ---
     const state = {
         settings: { app_settings: { columns: [], rows: [], locations: [] }, pagination_limit: 20 },
+=======
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Global Holat (State) ---
+    const state = {
+        settings: { app_settings: { columns: [], rows: [], locations: [] } },
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         savedReports: {},
         currentUser: null,
         currentReportId: null,
         isEditMode: false,
+<<<<<<< HEAD
         filters: { page: 1, searchTerm: '', startDate: '', endDate: '', filter: 'all' },
         pagination: { total: 0, pages: 0, currentPage: 1 }
+=======
+        activeFilter: 'all',
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
     };
 
     // --- DOM Elementlari ---
@@ -24,9 +35,15 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         excelBtn: document.getElementById('excel-btn'),
         newReportBtn: document.getElementById('new-report-btn'),
         logoutBtn: document.getElementById('logout-btn'),
+<<<<<<< HEAD
         adminPanelBtn: document.getElementById('admin-panel-btn'),
         savedReportsList: document.getElementById('saved-reports-list'),
         searchInput: document.getElementById('search-input'),
+=======
+        savedReportsList: document.getElementById('saved-reports-list'),
+        searchInput: document.getElementById('search-input'),
+        filterButtons: document.getElementById('report-filter-buttons'),
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         summaryWrapper: document.getElementById('summary-wrapper'),
         summaryList: document.getElementById('summary-list'),
         summaryTotal: document.getElementById('summary-total'),
@@ -35,6 +52,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         historyModalBody: document.getElementById('history-modal-body'),
         currentUsername: document.getElementById('current-username'),
         currentUserRole: document.getElementById('current-user-role'),
+<<<<<<< HEAD
         filterDateRange: document.getElementById('filter-date-range'),
         reportFilterButtons: document.getElementById('report-filter-buttons'),
         paginationControls: document.getElementById('pagination-controls'),
@@ -64,16 +82,42 @@ document.addEventListener('DOMContentLoaded', ( ) => {
             timeout = setTimeout(() => func.apply(this, args), delay);
         };
     };
+=======
+    };
+
+    let datePickerFP = null; // Flatpickr instance
+
+    // --- Yordamchi Funksiyalar ---
+    const showToast = (message, isError = false) => {
+        const toast = document.getElementById('toast-notification');
+        toast.textContent = message;
+        toast.className = `toast ${isError ? 'error' : ''}`;
+        setTimeout(() => { toast.className = `toast ${isError ? 'error' : ''} hidden`; }, 3000);
+    };
+    const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    const parseNumber = (str) => parseFloat(str.replace(/\s/g, '')) || 0;
+    const formatReportId = (id) => String(id).padStart(4, '0');
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
 
     // --- Asosiy Funksiyalar ---
     async function init() {
         try {
+<<<<<<< HEAD
             const userRes = await fetch('/api/current-user');
+=======
+            // 1. Foydalanuvchi va asosiy sozlamalarni yuklash
+            const [userRes, settingsRes] = await Promise.all([
+                fetch('/api/current-user'),
+                fetch('/api/settings')
+            ]);
+
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             if (!userRes.ok) {
                 window.location.href = '/login';
                 return;
             }
             state.currentUser = await userRes.json();
+<<<<<<< HEAD
             
             updateUserInfo();
             applyRolePermissions();
@@ -166,16 +210,90 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         const { columns = [], rows = [] } = state.settings.app_settings || {};
         if (DOM.tableHead) DOM.tableHead.innerHTML = `<tr><th>Ko'rsatkich</th>${columns.map(c => `<th>${c}</th>`).join('')}<th>Jami</th></tr>`;
         if (DOM.tableBody) DOM.tableBody.innerHTML = rows.map(rowName => `
+=======
+            state.settings = await settingsRes.json();
+
+            // 2. Rolga asoslangan interfeysni sozlash
+            applyRolePermissions();
+            updateUserInfo();
+
+            // 3. Jadval va boshqa komponentlarni birinchi marta chizish
+            setupDatePicker();
+            populateLocations();
+            buildTable();
+            
+            // 4. Hisobotlarni yuklash va ko'rsatish
+            await fetchAndRenderReports();
+
+            // 5. Hodisalarni sozlash
+            setupEventListeners();
+            feather.replace();
+            
+            // 6. Yangi hisobot rejimida boshlash
+            createNewReport();
+
+        } catch (error) {
+            showToast("Ma'lumotlarni yuklashda jiddiy xatolik!", true);
+            console.error("Initialization error:", error);
+        }
+    }
+
+    function applyRolePermissions() {
+        const { role } = state.currentUser;
+        DOM.body.dataset.userRole = role; // CSS orqali elementlarni yashirish uchun
+    }
+    
+    function updateUserInfo() {
+        DOM.currentUsername.textContent = state.currentUser.username;
+        DOM.currentUserRole.textContent = state.currentUser.role;
+    }
+
+    async function fetchAndRenderReports() {
+        try {
+            const reportsRes = await fetch('/api/reports');
+            state.savedReports = await reportsRes.json();
+            renderSavedReports();
+        } catch (error) {
+            showToast("Hisobotlarni yuklashda xatolik!", true);
+        }
+    }
+
+    function setupDatePicker() {
+        datePickerFP = flatpickr(DOM.datePickerEl, {
+            locale: 'uz',
+            dateFormat: 'Y-m-d',
+            defaultDate: new Date(),
+            altInput: true,
+            altFormat: 'd.m.Y',
+            onChange: () => DOM.datePickerEl.classList.remove('error-pulse'),
+        });
+    }
+
+    function buildTable() {
+        const { columns = [], rows = [] } = state.settings.app_settings;
+        // Sarlavha (Thead)
+        DOM.tableHead.innerHTML = `<tr><th>Ko'rsatkich</th>${columns.map(c => `<th>${c}</th>`).join('')}<th>Jami</th></tr>`;
+        // Tana (Tbody)
+        DOM.tableBody.innerHTML = rows.map(rowName => `
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             <tr>
                 <td data-label="Ko'rsatkich">${rowName}</td>
                 ${columns.map(colName => `<td data-label="${colName}"><input type="text" class="form-control numeric-input" data-key="${rowName}_${colName}" placeholder="0"></td>`).join('')}
                 <td data-label="Jami" class="row-total">0</td>
             </tr>`).join('');
+<<<<<<< HEAD
         if (DOM.tableFoot) DOM.tableFoot.innerHTML = `<tr><td>Jami</td>${columns.map(c => `<td class="col-total" data-col="${c}">0</td>`).join('')}<td id="grand-total">0</td></tr>`;
     }
 
     function updateTableValues(reportData = {}) {
         if (!DOM.tableBody) return;
+=======
+        // Yakun (Tfoot)
+        DOM.tableFoot.innerHTML = `<tr><td>Jami</td>${columns.map(c => `<td class="col-total" data-col="${c}">0</td>`).join('')}<td id="grand-total">0</td></tr>`;
+    }
+
+    function updateTableValues(reportData = {}) {
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         DOM.tableBody.querySelectorAll('.numeric-input').forEach(input => {
             const value = reportData[input.dataset.key] || '';
             input.value = value ? formatNumber(value) : '';
@@ -185,10 +303,17 @@ document.addEventListener('DOMContentLoaded', ( ) => {
 
     function updateCalculations() {
         let grandTotal = 0;
+<<<<<<< HEAD
         const columns = state.settings.app_settings?.columns || [];
         const columnTotals = columns.reduce((acc, col) => ({ ...acc, [col]: 0 }), {});
 
         if (DOM.tableBody) DOM.tableBody.querySelectorAll('tr').forEach(row => {
+=======
+        const columnTotals = {};
+        state.settings.app_settings.columns.forEach(col => columnTotals[col] = 0);
+
+        DOM.tableBody.querySelectorAll('tr').forEach(row => {
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             let rowTotal = 0;
             row.querySelectorAll('.numeric-input').forEach(input => {
                 const value = parseNumber(input.value);
@@ -198,6 +323,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
                     columnTotals[colName] += value;
                 }
             });
+<<<<<<< HEAD
             const rowTotalCell = row.querySelector('.row-total');
             if (rowTotalCell) rowTotalCell.textContent = formatNumber(rowTotal);
             grandTotal += rowTotal;
@@ -210,22 +336,45 @@ document.addEventListener('DOMContentLoaded', ( ) => {
             const grandTotalCell = document.getElementById('grand-total');
             if (grandTotalCell) grandTotalCell.textContent = formatNumber(grandTotal);
         }
+=======
+            row.querySelector('.row-total').textContent = formatNumber(rowTotal);
+            grandTotal += rowTotal;
+        });
+
+        DOM.tableFoot.querySelectorAll('.col-total').forEach(cell => {
+            const colName = cell.dataset.col;
+            cell.textContent = formatNumber(columnTotals[colName]);
+        });
+        document.getElementById('grand-total').textContent = formatNumber(grandTotal);
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         renderSummary();
     }
 
     function renderSummary() {
+<<<<<<< HEAD
         if (!DOM.summaryList || !DOM.summaryWrapper || !DOM.summaryTotal) return;
         DOM.summaryList.innerHTML = '';
         let hasData = false;
         if (DOM.tableBody) DOM.tableBody.querySelectorAll('tr').forEach(row => {
             const rowName = row.cells[0].textContent;
             const rowTotal = parseNumber(row.querySelector('.row-total')?.textContent);
+=======
+        DOM.summaryList.innerHTML = '';
+        let hasData = false;
+        DOM.tableBody.querySelectorAll('tr').forEach(row => {
+            const rowName = row.cells[0].textContent;
+            const rowTotal = parseNumber(row.querySelector('.row-total').textContent);
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             if (rowTotal > 0) {
                 hasData = true;
                 DOM.summaryList.innerHTML += `<div class="summary-item"><span>${rowName}</span><span>${formatNumber(rowTotal)} so'm</span></div>`;
             }
         });
+<<<<<<< HEAD
         const grandTotalText = document.getElementById('grand-total')?.textContent;
+=======
+        const grandTotalText = document.getElementById('grand-total').textContent;
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         if (hasData) {
             DOM.summaryTotal.textContent = `Umumiy summa: ${grandTotalText} so'm`;
             DOM.summaryWrapper.classList.remove('hidden');
@@ -235,15 +384,22 @@ document.addEventListener('DOMContentLoaded', ( ) => {
     }
 
     function populateLocations() {
+<<<<<<< HEAD
         if (!DOM.locationSelect) return;
         const { locations = [] } = state.settings.app_settings || {};
         const userLocations = state.currentUser.locations || [];
         const canViewAll = state.currentUser.permissions.includes('reports:view_all');
         const locationsToShow = canViewAll ? locations : userLocations;
+=======
+        const { locations = [] } = state.settings.app_settings;
+        const userLocations = state.currentUser.locations;
+        const locationsToShow = (state.currentUser.role !== 'admin' && userLocations.length > 0) ? userLocations : locations;
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         DOM.locationSelect.innerHTML = locationsToShow.map(loc => `<option value="${loc}">${loc}</option>`).join('');
     }
 
     function setInputsReadOnly(isReadOnly) {
+<<<<<<< HEAD
         if (DOM.tableBody) DOM.tableBody.querySelectorAll('.numeric-input').forEach(input => input.disabled = isReadOnly);
         if (datePickerFP) datePickerFP.set('clickOpens', !isReadOnly);
         if (DOM.locationSelect) DOM.locationSelect.disabled = isReadOnly || (state.currentUser.role === 'operator' && state.currentUser.locations.length <= 1);
@@ -280,11 +436,34 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         
         if (datePickerFP) datePickerFP.setDate(new Date(), true);
         if (DOM.locationSelect && state.currentUser.locations.length > 0) {
+=======
+        DOM.tableBody.querySelectorAll('.numeric-input').forEach(input => input.disabled = isReadOnly);
+        datePickerFP.set('clickOpens', !isReadOnly);
+        DOM.locationSelect.disabled = isReadOnly || (state.currentUser.role === 'operator' && state.currentUser.locations.length <= 1);
+    }
+
+    function createNewReport() {
+        state.currentReportId = null;
+        state.isEditMode = true;
+        
+        updateTableValues({});
+        setInputsReadOnly(false);
+
+        DOM.reportIdBadge.textContent = 'YANGI';
+        DOM.reportIdBadge.className = 'badge new';
+        DOM.confirmBtn.innerHTML = '<i data-feather="check-circle"></i> TASDIQLASH VA SAQLASH';
+        
+        datePickerFP.setDate(new Date(), true);
+        if (state.currentUser.locations.length > 0) {
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             DOM.locationSelect.value = state.currentUser.locations[0];
         }
         
         document.querySelectorAll('.report-item.active').forEach(item => item.classList.remove('active'));
+<<<<<<< HEAD
         updateUIForReportState();
+=======
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         feather.replace();
     }
 
@@ -295,6 +474,11 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         state.currentReportId = reportId;
         state.isEditMode = false;
 
+<<<<<<< HEAD
+=======
+        // Muhim: Hisobotning o'z sozlamalari bilan jadvalni qayta chizish
+        // Bu eski hisobotlar to'g'ri ko'rinishi uchun kerak
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         const originalSettings = state.settings.app_settings;
         state.settings.app_settings = report.settings;
         buildTable();
@@ -303,6 +487,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         updateTableValues(report.data);
         setInputsReadOnly(true);
 
+<<<<<<< HEAD
         if (DOM.reportIdBadge) {
             DOM.reportIdBadge.textContent = `#${formatReportId(reportId)}`;
             DOM.reportIdBadge.className = 'badge saved';
@@ -318,11 +503,44 @@ document.addEventListener('DOMContentLoaded', ( ) => {
     function renderSavedReports() {
         if (!DOM.savedReportsList) return;
         const reportIds = Object.keys(state.savedReports);
+=======
+        DOM.reportIdBadge.textContent = `#${formatReportId(reportId)}`;
+        DOM.reportIdBadge.className = 'badge saved';
+        datePickerFP.setDate(report.date, true);
+        DOM.locationSelect.value = report.location;
+
+        document.querySelectorAll('.report-item.active').forEach(item => item.classList.remove('active'));
+        document.querySelector(`.report-item[data-id='${reportId}']`)?.classList.add('active');
+    }
+
+    function renderSavedReports() {
+        DOM.savedReportsList.innerHTML = ''; // Skeletni tozalash
+        const reportIds = Object.keys(state.savedReports).map(Number).sort((a, b) => b - a);
+        const searchTerm = DOM.searchInput.value.toLowerCase().trim();
+
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         if (reportIds.length === 0) {
             DOM.savedReportsList.innerHTML = '<div class="empty-state">Hisobotlar topilmadi.</div>';
             return;
         }
+<<<<<<< HEAD
         DOM.savedReportsList.innerHTML = reportIds.map(id => {
+=======
+
+        const filteredReports = reportIds.filter(id => {
+            const report = state.savedReports[id];
+            const searchMatch = `#${formatReportId(id)}`.includes(searchTerm) || report.location.toLowerCase().includes(searchTerm) || report.date.includes(searchTerm);
+            const filterMatch = state.activeFilter === 'all' || (state.activeFilter === 'edited' && report.edit_count > 0) || (state.activeFilter === 'unedited' && report.edit_count === 0);
+            return searchMatch && filterMatch;
+        });
+
+        if (filteredReports.length === 0) {
+            DOM.savedReportsList.innerHTML = '<div class="empty-state">Filtrga mos hisobot topilmadi.</div>';
+            return;
+        }
+
+        DOM.savedReportsList.innerHTML = filteredReports.map(id => {
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             const report = state.savedReports[id];
             const editInfo = report.edit_count > 0 ? `<div class="report-edit-info">✍️ Tahrirlangan (${report.edit_count})</div>` : '';
             return `
@@ -333,6 +551,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         }).join('');
     }
 
+<<<<<<< HEAD
     function renderPagination() {
         if (!DOM.paginationControls) return;
         const { pages, currentPage } = state.pagination;
@@ -360,6 +579,20 @@ document.addEventListener('DOMContentLoaded', ( ) => {
             if (item) loadReport(item.dataset.id);
         });
         if (DOM.tableBody) DOM.tableBody.addEventListener('input', e => {
+=======
+    // --- Hodisa Tinglovchilari ---
+    function setupEventListeners() {
+        DOM.newReportBtn.addEventListener('click', createNewReport);
+        DOM.logoutBtn.addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        });
+        DOM.savedReportsList.addEventListener('click', (e) => {
+            const item = e.target.closest('.report-item');
+            if (item) loadReport(item.dataset.id);
+        });
+        DOM.tableBody.addEventListener('input', (e) => {
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             if (e.target.classList.contains('numeric-input')) {
                 const input = e.target;
                 const value = input.value.replace(/\s/g, '');
@@ -367,6 +600,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
                 const oldLength = input.value.length;
                 input.value = formatNumber(value.replace(/[^0-9]/g, ''));
                 const newLength = input.value.length;
+<<<<<<< HEAD
                 if (cursorPosition !== null) {
                     input.setSelectionRange(cursorPosition + (newLength - oldLength), cursorPosition + (newLength - oldLength));
                 }
@@ -431,6 +665,41 @@ document.addEventListener('DOMContentLoaded', ( ) => {
             late_comment: lateComment
         };
         DOM.tableBody?.querySelectorAll('.numeric-input').forEach(input => {
+=======
+                input.setSelectionRange(cursorPosition + (newLength - oldLength), cursorPosition + (newLength - oldLength));
+                updateCalculations();
+            }
+        });
+        DOM.confirmBtn.addEventListener('click', handleConfirm);
+        DOM.editBtn.addEventListener('click', handleEdit);
+        DOM.searchInput.addEventListener('input', renderSavedReports);
+        DOM.filterButtons.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                DOM.filterButtons.querySelector('.active').classList.remove('active');
+                e.target.classList.add('active');
+                state.activeFilter = e.target.dataset.filter;
+                renderSavedReports();
+            }
+        });
+        // Boshqa hodisalar...
+    }
+
+    async function handleConfirm() {
+        const selectedDate = datePickerFP.selectedDates[0];
+        if (!selectedDate) {
+            showToast("Iltimos, hisobot sanasini tanlang!", true);
+            DOM.datePickerEl.classList.add('error-pulse');
+            return;
+        }
+
+        const reportData = {
+            date: datePickerFP.formatDate(selectedDate, 'Y-m-d'),
+            location: DOM.locationSelect.value,
+            settings: state.settings.app_settings,
+            data: {},
+        };
+        DOM.tableBody.querySelectorAll('.numeric-input').forEach(input => {
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
             reportData.data[input.dataset.key] = parseNumber(input.value);
         });
 
@@ -446,6 +715,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
             showToast(result.message);
             await fetchAndRenderReports();
             const newId = isUpdating ? state.currentReportId : result.reportId;
+<<<<<<< HEAD
             setTimeout(() => {
                 const reportElement = document.querySelector(`.report-item[data-id='${newId}']`);
                 if (reportElement) {
@@ -454,6 +724,10 @@ document.addEventListener('DOMContentLoaded', ( ) => {
                     loadReport(newId);
                 }
             }, 200);
+=======
+            loadReport(newId);
+
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
         } catch (error) {
             showToast(error.message, true);
         }
@@ -462,6 +736,7 @@ document.addEventListener('DOMContentLoaded', ( ) => {
     function handleEdit() {
         state.isEditMode = true;
         setInputsReadOnly(false);
+<<<<<<< HEAD
         if (DOM.confirmBtn) DOM.confirmBtn.innerHTML = "<i data-feather='save'></i> O'ZGARISHLARNI SAQLASH";
         updateUIForReportState();
         feather.replace();
@@ -496,6 +771,12 @@ document.addEventListener('DOMContentLoaded', ( ) => {
         }
     }
 
+=======
+        DOM.confirmBtn.innerHTML = "<i data-feather='save'></i> O'ZGARISHLARNI SAQLASH";
+        feather.replace();
+    }
+
+>>>>>>> 3f04ba03669e96bdec9cf7001f305cafa9f03973
     // Dasturni ishga tushirish
     init();
 });
